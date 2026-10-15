@@ -238,7 +238,18 @@
                         </ComboBox>
                     </StackPanel>
                 </Border>
-
+                <!-- Ввод Post-условия для WP-->
+                <Border Grid.Row="4" Margin="0,0,0,8" Visibility="{Binding IsWpVisible}">
+                    <StackPanel>
+                        <TextBlock Text="Цель (Post-условие):" FontSize="12" FontWeight="Bold" Foreground="#1976D2" Margin="0,0,0,4"/>
+                        <Border CornerRadius="8" BorderBrush="#1976D2" BorderThickness="1" Background="#E3F2FD">
+                            <TextBox Text="{Binding WpPostCondition, UpdateSourceTrigger=PropertyChanged}" 
+                                     Padding="8,6" FontSize="13" FontFamily="Consolas" 
+                                     BorderThickness="0" Background="Transparent" 
+                                     ToolTip="Например: max > 100"/>
+                        </Border>
+                    </StackPanel>
+                </Border>
                 <!-- Кнопка выполнить -->
                 <Button Grid.Row="4" Style="{StaticResource ExecuteButton}" Content="Выполнить" Click="BtnExecute_Click"/>
 
