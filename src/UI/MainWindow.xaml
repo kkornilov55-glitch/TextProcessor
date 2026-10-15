@@ -155,7 +155,7 @@
                     <Button Style="{StaticResource DefaultButton}" Content="Нормализация текста" Click="BtnNormalization_Click"/>
                     <Button Style="{StaticResource DefaultButton}" Content="Маскирование" Click="BtnMasking_Click"/>
                     <Button Style="{StaticResource DefaultButton}" Content="Фильтрация строк" Click="BtnFiltering_Click"/>
-                    <Button Style="{StaticResource DefaultButton}" Content="WP Калькулятор"/>
+                    <Button Style="{StaticResource DefaultButton}" Content="WP Калькулятор" Click="BtnWpCalculator_Click"/>
                 </StackPanel>
                 
                 <StackPanel Grid.Row="2">
@@ -251,10 +251,24 @@
                     </StackPanel>
                 </Border>
                 <!-- Кнопка выполнить -->
-                <Button Grid.Row="4" Style="{StaticResource ExecuteButton}" Content="Выполнить" Click="BtnExecute_Click"/>
+                <Button Grid.Row="5" Style="{StaticResource ExecuteButton}" Content="Выполнить" Click="BtnExecute_Click"/>
+                
+                <!-- 6. Результаты WP -->
+                <Border Grid.Row="6" Margin="0,0,0,8" Visibility="{Binding IsWpVisible}">
+                    <StackPanel>
+                        <TextBlock Text="📋 Пошаговый трейс:" FontWeight="Bold" FontSize="12" Margin="0,0,0,5"/>
+                        <TextBox Text="{Binding WpSteps}" Height="70" IsReadOnly="True" FontFamily="Consolas" FontSize="12" TextWrapping="Wrap" Background="#F5F5F5" Margin="0,0,0,10"/>
+
+                        <TextBlock Text="Итоговое wp (краткая запись):" FontWeight="Bold" FontSize="12" Margin="0,0,0,5"/>
+                        <TextBox Text="{Binding WpPre}" Height="40" IsReadOnly="True" FontFamily="Consolas" FontSize="12" TextWrapping="Wrap" Background="#FFF9C4" Margin="0,0,0,10"/>
+
+                        <TextBlock Text="🔺 Триада Хоара:" FontWeight="Bold" FontSize="12" Margin="0,0,0,5"/>
+                        <TextBox Text="{Binding WpTriad}" Height="60" IsReadOnly="True" FontFamily="Consolas" FontSize="12" TextWrapping="Wrap" Background="#E8F5E9"/>
+                    </StackPanel>
+                </Border>
 
                 <!-- Статус контракта -->
-                <Border Grid.Row="5" BorderBrush="#CCCCCC" BorderThickness="1" CornerRadius="12" Padding="15" Margin="0,0,0,8">
+                <Border Grid.Row="7" BorderBrush="#CCCCCC" BorderThickness="1" CornerRadius="12" Padding="15" Margin="0,0,0,8">
                     <StackPanel>
                         <TextBlock Text="Статус контракта" FontSize="18" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,15"/>
 
@@ -289,7 +303,7 @@
                 </Border>
 
                 <!-- 6. Кнопка показать контракт -->
-                <Button Grid.Row="6" Style="{StaticResource ContractButton}" Content="Показать контракт" Click="BtnShowContract_Click"/>
+                <Button Grid.Row="8" Style="{StaticResource ContractButton}" Content="Показать контракт" Click="BtnShowContract_Click" Visibility="{Binding IsContractVisible}"/>
             </Grid>
         </Border>
     </Grid>

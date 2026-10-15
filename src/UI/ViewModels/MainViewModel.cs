@@ -129,7 +129,19 @@ namespace UI.ViewModels
                 this.Notify("PreText");
             }
         }
+        private System.Windows.Visibility isWpVisible = System.Windows.Visibility.Collapsed;
+        public System.Windows.Visibility IsWpVisible
+        {
+            get { return this.isWpVisible; }
+            set { this.isWpVisible = value; this.Notify("IsWpVisible"); }
+        }
 
+        private System.Windows.Visibility isContractVisible = System.Windows.Visibility.Visible;
+        public System.Windows.Visibility IsContractVisible
+        {
+            get { return this.isContractVisible; }
+            set { this.isContractVisible = value; this.Notify("IsContractVisible"); }
+        }
         // Методы управления видимостью
 
         private void UpdateOperationVisibility()
@@ -139,6 +151,12 @@ namespace UI.ViewModels
 
             this.IsMaskingOptionsVisible = (this.currentOperationTitle == "Маскирование")
                 ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed;
+
+            this.IsWpVisible = (this.currentOperationTitle == "WP Калькулятор")
+                ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed;
+
+            this.IsContractVisible = (this.currentOperationTitle == "WP Калькулятор")
+                ? System.Windows.Visibility.Collapsed : System.Windows.Visibility.Visible;
         }
 
         // Индикаторы Post
@@ -174,7 +192,10 @@ namespace UI.ViewModels
         {
             this.CurrentOperationTitle = "Маскирование";
         }
-
+        public void SelectWpCalculator()
+        {
+            this.CurrentOperationTitle = "WP Калькулятор";
+        }
         public void SelectFiltering()
         {
             this.CurrentOperationTitle = "Фильтрация строк";
@@ -302,6 +323,7 @@ namespace UI.ViewModels
 
             this.Notify("InputText");
         }
+
         // Динамическая проверка Pre-условий
         private void CheckPreConditions()
         {
