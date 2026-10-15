@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using Microsoft.Win32;
+using System.Linq;
 
 namespace UI.ViewModels
 {
@@ -53,15 +54,7 @@ namespace UI.ViewModels
             {
                 this.inputText = value;
                 this.Notify("InputText");
-
-                // Если текст изменили вручную после успешного выполнения, сбрасываем статусы
-                if (this.PreColor == "Green" || this.PostColor == "Green")
-                {
-                    this.PreColor = "Gray";
-                    this.PreText = "ОЖИДАНИЕ ПРОВЕРКИ";
-                    this.PostColor = "Gray";
-                    this.PostText = "ОЖИДАНИЕ ПРОВЕРКИ";
-                }
+                this.CheckPreConditions();
             }
         }
 
@@ -74,6 +67,7 @@ namespace UI.ViewModels
             {
                 this.filterKeyword = value;
                 this.Notify("FilterKeyword");
+                this.CheckPreConditions();
             }
         }
 
@@ -193,6 +187,7 @@ namespace UI.ViewModels
             this.PreText = "ОЖИДАНИЕ ПРОВЕРКИ";
             this.PostColor = "Gray";
             this.PostText = "ОЖИДАНИЕ ПРОВЕРКИ";
+            this.CheckPreConditions();
         }
 
         // Кнопка Выполнить
@@ -306,6 +301,77 @@ namespace UI.ViewModels
             }
 
             this.Notify("InputText");
+        }
+        // Динамическая проверка Pre-условий
+        private void CheckPreConditions()
+        {
+            bool isMet = false;
+            string message = "";
+
+            if (this.currentOperationTitle == "Нормализация текста")
+            {
+                isMet = !string.IsNullOrWhiteSpace(this.inputText);
+                message = isMet ? "Текст содержит данные для обработки" : "Текст пуст или состоит из пробелов";
+            }
+            else if (this.currentOperationTitle == "Фильтрация строк")
+            {
+                isMet = !string.IsNullOrWhiteSpace(this.inputText) && !string.IsNullOrWhiteSpace(this.filterKeyword);
+                message = isMet ? "Текст и ключевое слово заданы" : "Текст или ключевое слово пусты";
+            }
+            else if (this.currentOperationTitle == "Маскирование")
+            {
+                // Для маскирования проверяем содержание цифр
+                if (string.IsNullOrWhiteSpace(this.inputText))
+                {
+                    isMet = false;
+                    message = "Текст пуст";
+                }
+                else
+                {
+                    // Извлекаем только цифры из текста
+                    string digitsOnly = new string(this.inputText.Where(char.IsDigit).ToArray());
+
+                    // Проверяем количество цифр в зависимости от типа маски
+                    int requiredDigits = 0;
+                    string maskType = "";
+
+                    if (this.selectedMaskType == "Телефон (10 цифр)")
+                    {
+                        requiredDigits = 10;
+                        maskType = "телефона";
+                    }
+                    else if (this.selectedMaskType == "СНИЛС (11 цифр)")
+                    {
+                        requiredDigits = 11;
+                        maskType = "СНИЛС";
+                    }
+                    else if (this.selectedMaskType == "Банковская карта (16 цифр)")
+                    {
+                        requiredDigits = 16;
+                        maskType = "банковской карты";
+                    }
+
+                    if (digitsOnly.Length == requiredDigits)
+                    {
+                        isMet = true;
+                        message = $"Найдено {requiredDigits} цифр (корректно для {maskType})";
+                    }
+                    else if (digitsOnly.Length > requiredDigits)
+                    {
+                        isMet = false;
+                        message = $"Найдено {digitsOnly.Length} цифр, нужно {requiredDigits} (слишком много)";
+                    }
+                    else
+                    {
+                        isMet = false;
+                        message = $"Найдено {digitsOnly.Length} цифр, нужно {requiredDigits} (недостаточно)";
+                    }
+                }
+            }
+
+            // Обновляем UI
+            this.PreColor = isMet ? "Green" : "Red";
+            this.PreText = isMet ? "ВЫПОЛНЕНО" : "НЕ ВЫПОЛНЕНО: " + message;
         }
 
         // Кнопка Показать контракт
