@@ -15,7 +15,22 @@ public sealed class SyntaxError(string message, SourcePos pos, uint index) : Exc
     public uint Index { get; } = index;
 }
 
-
+/// <summary>
+/// Парсер Post-условий (предикатов) и фрагментов кода. Исключения наружу не выбрасывает:
+/// лексические ошибки возвращаются списком, синтаксическая — первая найденная.
+/// </summary>
+/// <remarks>
+/// Грамматика:
+///   program = { stmt }
+///   stmt    = IDENT ":=" expr ";" | "if" "(" pred ")" block "else" block
+///   block   = "{" { stmt } "}"
+///   pred    = and { "||" and };   and = not { "&amp;&amp;" not };   not = "!" not | atom
+///   atom    = "true" | "false" | cmp | "(" pred ")"
+///   cmp     = expr ("&lt;"|"&lt;="|"&gt;"|"&gt;="|"=="|"!=") expr
+///   expr    = term { ("+"|"-") term };   term = unary { ("*"|"/") unary }
+///   unary   = "-" unary | primary
+///   primary = NUMBER | IDENT | "abs" "(" expr ")" | "(" expr ")"
+/// </remarks>
 public class AstParser
 {
     public static ParseResult<AstPredication> ParsePredication(LexResult lexResult) =>
