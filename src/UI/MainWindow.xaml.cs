@@ -65,5 +65,9 @@ namespace UI
         {
             this.viewModel.ShowContract();
         }
+        private void BtnWpCalculator_Click(object sender, RoutedEventArgs e)
+        {
+            this.viewModel.SelectWpCalculator();
+        }
     }
 }
