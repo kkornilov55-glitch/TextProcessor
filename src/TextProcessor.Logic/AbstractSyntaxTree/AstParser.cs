@@ -31,7 +31,7 @@ public sealed class SyntaxError(string message, SourcePos pos, uint index) : Exc
 ///   unary   = "-" unary | primary
 ///   primary = NUMBER | IDENT | "abs" "(" expr ")" | "(" expr ")"
 /// </remarks>
-public class AstParser
+public static class AstParser
 {
     public static ParseResult<AstPredication> ParsePredication(LexResult lexResult) =>
         Run(lexResult, s => s.ParsePredication());
