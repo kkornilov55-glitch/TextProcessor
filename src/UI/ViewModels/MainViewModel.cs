@@ -55,6 +55,8 @@ namespace UI.ViewModels
                 this.inputText = value;
                 this.Notify("InputText");
                 this.CheckPreConditions();
+                if (this.currentOperationTitle == "WP Калькулятор")
+                    this.CheckWpPreConditions();
             }
         }
 
@@ -142,6 +144,13 @@ namespace UI.ViewModels
             get { return this.isContractVisible; }
             set { this.isContractVisible = value; this.Notify("IsContractVisible"); }
         }
+        private System.Windows.Visibility isLr1Visible = System.Windows.Visibility.Visible;
+        public System.Windows.Visibility IsLr1Visible
+        {
+            get { return this.isLr1Visible; }
+            set { this.isLr1Visible = value; this.Notify("IsLr1Visible"); }
+        }
+
         // Методы управления видимостью
 
         private void UpdateOperationVisibility()
@@ -157,6 +166,9 @@ namespace UI.ViewModels
 
             this.IsContractVisible = (this.currentOperationTitle == "WP Калькулятор")
                 ? System.Windows.Visibility.Collapsed : System.Windows.Visibility.Visible;
+
+            this.IsLr1Visible = (this.currentOperationTitle == "WP Калькулятор")
+                ? System.Windows.Visibility.Collapsed : System.Windows.Visibility.Visible;
         }
 
         private string wpPostCondition = "";
@@ -167,6 +179,8 @@ namespace UI.ViewModels
             {
                 this.wpPostCondition = value;
                 this.Notify("WpPostCondition");
+                if (this.currentOperationTitle == "WP Калькулятор")
+                    this.CheckWpPreConditions();
             }
         }
 
@@ -202,6 +216,37 @@ namespace UI.ViewModels
                 this.Notify("WpTriad");
             }
         }
+        private void CheckWpPreConditions()
+        {
+            if (this.currentOperationTitle != "WP Калькулятор")
+                return;
+
+            bool isMet = false;
+            string message = "";
+
+            // Проверяем, заполнены ли оба поля
+            if (string.IsNullOrWhiteSpace(this.inputText))
+            {
+                isMet = false;
+                message = "Поле 'Код программы' пустое";
+            }
+            else if (string.IsNullOrWhiteSpace(this.wpPostCondition))
+            {
+                isMet = false;
+                message = "Поле 'Цель (Post-условие)' пустое";
+            }
+            else
+            {
+                isMet = true;
+                message = "Готов к вычислению wp";
+            }
+
+            this.PreColor = isMet ? "Green" : "Red";
+            this.PreText = isMet ? "ВЫПОЛНЕНО" : "НЕ ВЫПОЛНЕНО: " + message;
+            this.PostColor = "Gray";
+            this.PostText = "ОЖИДАНИЕ ПРОВЕРКИ";
+        }
+
 
         // Индикаторы Post
         private string postColor = "Gray";

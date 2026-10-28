@@ -9,10 +9,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TextProcessor.Logic\TextProcessor.Logic.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Reference Include="TextProcessor.Logic">
       <HintPath>..\TextProcessor.Logic\bin\Debug\net9.0\TextProcessor.Logic.dll</HintPath>
     </Reference>
