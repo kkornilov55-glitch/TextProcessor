@@ -16,7 +16,14 @@ public record Assign(string Name, AstExpression Expression) : AstStatement;
 /// Блок императивной логики
 /// </summary>
 /// <param name="Statements"></param>
-public record Block(IReadOnlyList<AstStatement> Statements) : AstStatement;
+public record Block(IReadOnlyList<AstStatement> Statements) : AstStatement
+{
+    public virtual bool Equals(Block? other)
+        => other is not null && Statements.SequenceEqual(other.Statements);
+    
+    public override int GetHashCode() =>
+        Statements.Aggregate(0, HashCode.Combine);
+}
 
 /// <summary>
 /// Ветвление в зависимости от условия, указанного в <paramref name="Predication"/>
