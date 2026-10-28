@@ -78,12 +78,12 @@ public static class AstLexer
         var errors = new List<LexError>();
         
         uint pos = 0, line = 1, lineStart = 0;
-        while (pos <= source.Length)
+        while (pos < source.Length)
         {
             SourcePos here = new (pos, line, pos - lineStart + 1);
             var tokenMatch = TokenRe.Match(source, (int)pos);
 
-            if (tokenMatch.Success)
+            if (!tokenMatch.Success)
             {
                 errors.Add(new LexError(DescribeUnexpected(source[(int)pos]), here));
                 pos++;
