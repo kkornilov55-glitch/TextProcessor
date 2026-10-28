@@ -110,6 +110,8 @@ public static class AstParser
                 }
                 case TokenKind.If:
                     return ParseCondition();
+                case TokenKind.Loop:
+                    throw Error("Циклы не поддерживаются");
                 default:
                     throw Error($"Ожидался оператор (присваивание или if), найдено {Describe(t)}");
             }

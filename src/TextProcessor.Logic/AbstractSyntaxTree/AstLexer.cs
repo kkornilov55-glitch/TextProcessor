@@ -59,6 +59,9 @@ public static class AstLexer
         ["abs"] = TokenKind.Abs,
         ["true"] = TokenKind.True,
         ["false"] = TokenKind.False,
+        ["while"] = TokenKind.Loop,
+        ["for"] = TokenKind.Loop,
+        ["do"] = TokenKind.Loop,
     };
     
     private static string DescribeUnexpected(char c) => c switch
@@ -91,8 +94,10 @@ public static class AstLexer
             }
 
             if (tokenMatch.Groups["ws"].Success)
+            {
                 for (uint i = 0; i < tokenMatch.Length; i++)
                     if (tokenMatch.Value[(int)i] == '\n') { line++; lineStart = pos + i + 1; }
+            }
             else if (tokenMatch.Groups["num"].Success)
                 tokens.Add(new (TokenKind.Number, tokenMatch.Value, here));
             else if (tokenMatch.Groups["id"].Success)
