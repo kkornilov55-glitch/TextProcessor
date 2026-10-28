@@ -27,31 +27,41 @@ public sealed record LexResult(IReadOnlyList<Token> Tokens, IReadOnlyList<LexErr
 
 public static class AstLexer
 {
+    // Упрощённый regex без IgnorePatternWhitespace
     private static readonly Regex TokenRe = new(
-        @"\G(?:
-              (?<ws>\s+)
-            | (?<num>\d+(?:\.\d+)?)
-            | (?<id>[\p{L}_][\p{L}\p{Nd}_]*)
-            | (?<op>:=|<=|>=|==|!=|&&|\|\||[-+*/<>!(){};≔≤≥≠∧∨¬])
-        )",
-        RegexOptions.IgnorePatternWhitespace | RegexOptions.CultureInvariant | RegexOptions.Compiled);
-    
+        @"\G(?:\s+|\d+(?:\.\d+)?|[\p{L}_][\p{L}\p{Nd}_]*|:=|<=|>=|==|!=|&&|\|\||[-+*/<>!(){};≤≥≠∧∨¬])",
+        RegexOptions.CultureInvariant | RegexOptions.Compiled);
+
     private static readonly Dictionary<string, TokenKind> Operators = new()
     {
-        [":="] = TokenKind.Assign, ["≔"] = TokenKind.Assign,
-        ["+"] = TokenKind.Plus, ["-"] = TokenKind.Minus,
-        ["*"] = TokenKind.Star, ["/"] = TokenKind.Slash,
-        ["<"] = TokenKind.Lt, ["<="] = TokenKind.Le, ["≤"] = TokenKind.Le,
-        [">"] = TokenKind.Gt, [">="] = TokenKind.Ge, ["≥"] = TokenKind.Ge,
-        ["=="] = TokenKind.Eq, ["!="] = TokenKind.Ne, ["≠"] = TokenKind.Ne,
-        ["&&"] = TokenKind.And, ["∧"] = TokenKind.And,
-        ["||"] = TokenKind.Or, ["∨"] = TokenKind.Or,
-        ["!"] = TokenKind.Not, ["¬"] = TokenKind.Not,
-        ["("] = TokenKind.LParen, [")"] = TokenKind.RParen,
-        ["{"] = TokenKind.LBrace, ["}"] = TokenKind.RBrace,
+        [":="] = TokenKind.Assign,
+        ["≔"] = TokenKind.Assign,
+        ["+"] = TokenKind.Plus,
+        ["-"] = TokenKind.Minus,
+        ["*"] = TokenKind.Star,
+        ["/"] = TokenKind.Slash,
+        ["<"] = TokenKind.Lt,
+        ["<="] = TokenKind.Le,
+        ["≤"] = TokenKind.Le,
+        [">"] = TokenKind.Gt,
+        [">="] = TokenKind.Ge,
+        ["≥"] = TokenKind.Ge,
+        ["=="] = TokenKind.Eq,
+        ["!="] = TokenKind.Ne,
+        ["≠"] = TokenKind.Ne,
+        ["&&"] = TokenKind.And,
+        [""] = TokenKind.And,
+        ["||"] = TokenKind.Or,
+        ["∨"] = TokenKind.Or,
+        ["!"] = TokenKind.Not,
+        ["¬"] = TokenKind.Not,
+        ["("] = TokenKind.LParen,
+        [")"] = TokenKind.RParen,
+        ["{"] = TokenKind.LBrace,
+        ["}"] = TokenKind.RBrace,
         [";"] = TokenKind.Semicolon,
     };
-    
+
     private static readonly Dictionary<string, TokenKind> Keywords = new()
     {
         ["if"] = TokenKind.If,
@@ -60,7 +70,7 @@ public static class AstLexer
         ["true"] = TokenKind.True,
         ["false"] = TokenKind.False,
     };
-    
+
     private static string DescribeUnexpected(char c) => c switch
     {
         '=' => "Одиночный '=': для присваивания используйте ':=', для сравнения '=='",
@@ -76,11 +86,11 @@ public static class AstLexer
 
         var tokens = new List<Token>();
         var errors = new List<LexError>();
-        
+
         uint pos = 0, line = 1, lineStart = 0;
         while (pos < source.Length)
         {
-            SourcePos here = new (pos, line, pos - lineStart + 1);
+            SourcePos here = new(pos, line, pos - lineStart + 1);
             var tokenMatch = TokenRe.Match(source, (int)pos);
 
             if (!tokenMatch.Success)
@@ -90,19 +100,37 @@ public static class AstLexer
                 continue;
             }
 
-            if (tokenMatch.Groups["ws"].Success)
-                for (uint i = 0; i < tokenMatch.Length; i++)
-                    if (tokenMatch.Value[(int)i] == '\n') { line++; lineStart = pos + i + 1; }
-            else if (tokenMatch.Groups["num"].Success)
-                tokens.Add(new (TokenKind.Number, tokenMatch.Value, here));
-            else if (tokenMatch.Groups["id"].Success)
-                tokens.Add(new Token(Keywords.GetValueOrDefault(tokenMatch.Value, TokenKind.Ident), tokenMatch.Value, here));
-            else if (tokenMatch.Groups["op"].Success)
-                tokens.Add(new Token(Operators[tokenMatch.Value], tokenMatch.Value, here));
-            
-            pos += (uint)tokenMatch.Length;
+            string matched = tokenMatch.Value;
+
+            // Пропускаем пробелы
+            if (string.IsNullOrWhiteSpace(matched))
+            {
+                for (uint i = 0; i < matched.Length; i++)
+                    if (matched[(int)i] == '\n') { line++; lineStart = pos + i + 1; }
+            }
+            // Число
+            else if (char.IsDigit(matched[0]))
+            {
+                tokens.Add(new(TokenKind.Number, matched, here));
+            }
+            // Идентификатор или ключевое слово
+            else if (char.IsLetter(matched[0]) || matched[0] == '_')
+            {
+                tokens.Add(new Token(Keywords.GetValueOrDefault(matched, TokenKind.Ident), matched, here));
+            }
+            // Оператор
+            else if (Operators.ContainsKey(matched))
+            {
+                tokens.Add(new Token(Operators[matched], matched, here));
+            }
+            else
+            {
+                errors.Add(new LexError($"Неизвестный оператор: '{matched}'", here));
+            }
+
+            pos += (uint)matched.Length;
         }
-        
+
         tokens.Add(new Token(TokenKind.Eof, string.Empty, new SourcePos(pos, line, pos - lineStart + 1)));
         return new LexResult(tokens, errors);
     }

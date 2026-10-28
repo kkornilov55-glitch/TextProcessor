@@ -238,23 +238,39 @@
                         </ComboBox>
                     </StackPanel>
                 </Border>
-                <!-- Ввод Post-условия для WP-->
+
+                <!-- Поле для ввода кода программы -->
                 <Border Grid.Row="4" Margin="0,0,0,8" Visibility="{Binding IsWpVisible}">
+                    <StackPanel>
+                        <TextBlock Text="Код программы:" FontSize="12" FontWeight="Bold" Foreground="#2196F3" Margin="0,0,0,4"/>
+                        <Border CornerRadius="8" BorderBrush="#2196F3" BorderThickness="1" Background="#E3F2FD">
+                            <TextBox Text="{Binding InputText, UpdateSourceTrigger=PropertyChanged}" 
+                     Padding="8,6" FontSize="13" FontFamily="Consolas" 
+                     BorderThickness="0" Background="Transparent" 
+                     AcceptsReturn="True" TextWrapping="Wrap"
+                     Height="150"
+                     ToolTip="Введите код: присваивания x := expr; и if (cond) { ... } else { ... }"/>
+                        </Border>
+                    </StackPanel>
+                </Border>
+                <!-- Ввод Post-условия для WP-->
+                <Border Grid.Row="5" Margin="0,0,0,8" Visibility="{Binding IsWpVisible}">
                     <StackPanel>
                         <TextBlock Text="Цель (Post-условие):" FontSize="12" FontWeight="Bold" Foreground="#50C878" Margin="0,0,0,4"/>
                         <Border CornerRadius="8" BorderBrush="#50C878" BorderThickness="1" Background="#E3F2FD">
+                            <!-- ВАЖНО: здесь должно быть WpPostCondition -->
                             <TextBox Text="{Binding WpPostCondition, UpdateSourceTrigger=PropertyChanged}" 
-                                     Padding="8,6" FontSize="13" FontFamily="Consolas" 
-                                     BorderThickness="0" Background="Transparent" 
-                                     ToolTip="Например: max > 100"/>
+                     Padding="8,6" FontSize="13" FontFamily="Consolas" 
+                     BorderThickness="0" Background="Transparent" 
+                     ToolTip="Например: max > 100"/>
                         </Border>
                     </StackPanel>
                 </Border>
                 <!-- Кнопка выполнить -->
-                <Button Grid.Row="5" Style="{StaticResource ExecuteButton}" Content="Выполнить" Click="BtnExecute_Click"/>
+                <Button Grid.Row="6" Style="{StaticResource ExecuteButton}" Content="Выполнить" Click="BtnExecute_Click"/>
                 
                 <!-- 6. Результаты WP -->
-                <Border Grid.Row="6" Margin="0,0,0,8" Visibility="{Binding IsWpVisible}">
+                <Border Grid.Row="7" Margin="0,0,0,8" Visibility="{Binding IsWpVisible}">
                     <StackPanel>
                         <TextBlock Text="Пошаговый трейс:" FontWeight="Bold" FontSize="12" Margin="0,0,0,5"/>
                         <TextBox Text="{Binding WpSteps}" Height="60" IsReadOnly="True" FontFamily="Consolas" FontSize="12" TextWrapping="Wrap" Background="#FFFFFF" Margin="0,0,0,10"/>
@@ -268,7 +284,7 @@
                 </Border>
 
                 <!-- Статус контракта -->
-                <Border Grid.Row="7" BorderBrush="#CCCCCC" BorderThickness="1" CornerRadius="12" Padding="15" Margin="0,0,0,8">
+                <Border Grid.Row="8" BorderBrush="#CCCCCC" BorderThickness="1" CornerRadius="12" Padding="15" Margin="0,0,0,8">
                     <StackPanel>
                         <TextBlock Text="Статус контракта" FontSize="18" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,15"/>
 
@@ -303,7 +319,7 @@
                 </Border>
 
                 <!-- 6. Кнопка показать контракт -->
-                <Button Grid.Row="8" Style="{StaticResource ContractButton}" Content="Показать контракт" Click="BtnShowContract_Click" Visibility="{Binding IsContractVisible}"/>
+                <Button Grid.Row="9" Style="{StaticResource ContractButton}" Content="Показать контракт" Click="BtnShowContract_Click" Visibility="{Binding IsContractVisible}"/>
             </Grid>
         </Border>
     </Grid>
