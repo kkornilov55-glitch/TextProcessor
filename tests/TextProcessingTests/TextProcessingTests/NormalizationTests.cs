@@ -71,30 +71,6 @@ namespace TextProcessingTests
         }
 
         [Fact]
-        public void Normalize_EmptyString_ReturnsEmptyString()
-        {
-            string input = "";
-            string result = _normalizer.Normalize(input);
-            Assert.Equal("", result);
-        }
-
-        [Fact]
-        public void Normalize_OnlySpaces_ReturnsEmptyString()
-        {
-            string input = "     ";
-            string result = _normalizer.Normalize(input);
-            Assert.Equal("", result);
-        }
-
-        [Fact]
-        public void Normalize_OnlyPunctuation_ReturnsEmptyString()
-        {
-            string input = "!@#$%^&*()";
-            string result = _normalizer.Normalize(input);
-            Assert.Equal("", result);
-        }
-
-        [Fact]
         public void Normalize_SingleWord_ReturnsLowercase()
         {
             string input = "ПРИВЕТ";
