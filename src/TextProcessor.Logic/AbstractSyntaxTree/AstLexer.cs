@@ -79,11 +79,11 @@ public static class AstLexer
 
         var tokens = new List<Token>();
         var errors = new List<LexError>();
-        
+
         uint pos = 0, line = 1, lineStart = 0;
         while (pos < source.Length)
         {
-            SourcePos here = new (pos, line, pos - lineStart + 1);
+            SourcePos here = new(pos, line, pos - lineStart + 1);
             var tokenMatch = TokenRe.Match(source, (int)pos);
 
             if (!tokenMatch.Success)
@@ -99,15 +99,21 @@ public static class AstLexer
                     if (tokenMatch.Value[(int)i] == '\n') { line++; lineStart = pos + i + 1; }
             }
             else if (tokenMatch.Groups["num"].Success)
-                tokens.Add(new (TokenKind.Number, tokenMatch.Value, here));
+            {
+                tokens.Add(new(TokenKind.Number, tokenMatch.Value, here));
+            }
             else if (tokenMatch.Groups["id"].Success)
+            {
                 tokens.Add(new Token(Keywords.GetValueOrDefault(tokenMatch.Value, TokenKind.Ident), tokenMatch.Value, here));
+            }
             else if (tokenMatch.Groups["op"].Success)
+            {
                 tokens.Add(new Token(Operators[tokenMatch.Value], tokenMatch.Value, here));
-            
+            }
+
             pos += (uint)tokenMatch.Length;
         }
-        
+
         tokens.Add(new Token(TokenKind.Eof, string.Empty, new SourcePos(pos, line, pos - lineStart + 1)));
         return new LexResult(tokens, errors);
     }
