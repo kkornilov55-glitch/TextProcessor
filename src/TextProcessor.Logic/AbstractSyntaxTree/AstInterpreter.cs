@@ -25,7 +25,7 @@ public static class AstInterpreter
             case Var var:
                 return state.TryGetValue(var.Name, out var value)
                     ? value
-                    : throw new EvalException($"Переменная \"{var.Name}\" не определена");
+                    : throw new EvalException($"'{var.Name}' не определена");
             case Neg neg:
                 return -Evalute(neg.AstExpression, state);
             case Abs abs:
@@ -50,7 +50,7 @@ public static class AstInterpreter
                 }
                 catch (OverflowException)
                 {
-                    throw new EvalException("Произошло переполнение при вычислении");
+                    throw new EvalException("Переполнение при вычислении");
                 }
             default:
                 throw new ArgumentException($"Неизвестное выражение: {expr.GetType().Name}");
