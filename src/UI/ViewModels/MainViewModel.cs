@@ -558,7 +558,16 @@ namespace UI.ViewModels
         }
 
         //Новое
+        public void ShowWpHelp()
+        {
+            ContractViewModel helpViewModel = new ContractViewModel("WP Калькулятор");
+            ContractWindow helpWindow = new ContractWindow(helpViewModel);
 
+            // Переименовываем окно из "Контракт операции" в "Справка"
+            helpWindow.Title = "Справка: WP Калькулятор";
+
+            helpWindow.ShowDialog();
+        }
 
 
         private void CalculateWp()
