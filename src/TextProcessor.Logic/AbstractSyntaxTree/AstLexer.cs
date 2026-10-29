@@ -27,31 +27,41 @@ public sealed record LexResult(IReadOnlyList<Token> Tokens, IReadOnlyList<LexErr
 
 public static class AstLexer
 {
+    // Упрощённый regex без IgnorePatternWhitespace
     private static readonly Regex TokenRe = new(
-        @"\G(?:
-              (?<ws>\s+)
-            | (?<num>\d+(?:\.\d+)?)
-            | (?<id>[\p{L}_][\p{L}\p{Nd}_]*)
-            | (?<op>:=|<=|>=|==|!=|&&|\|\||[-+*/<>!(){};≔≤≥≠∧∨¬])
-        )",
-        RegexOptions.IgnorePatternWhitespace | RegexOptions.CultureInvariant | RegexOptions.Compiled);
-    
+        @"\G(?:\s+|\d+(?:\.\d+)?|[\p{L}_][\p{L}\p{Nd}_]*|:=|<=|>=|==|!=|&&|\|\||[-+*/<>!(){};≤≥≠∧∨¬])",
+        RegexOptions.CultureInvariant | RegexOptions.Compiled);
+
     private static readonly Dictionary<string, TokenKind> Operators = new()
     {
-        [":="] = TokenKind.Assign, ["≔"] = TokenKind.Assign,
-        ["+"] = TokenKind.Plus, ["-"] = TokenKind.Minus,
-        ["*"] = TokenKind.Star, ["/"] = TokenKind.Slash,
-        ["<"] = TokenKind.Lt, ["<="] = TokenKind.Le, ["≤"] = TokenKind.Le,
-        [">"] = TokenKind.Gt, [">="] = TokenKind.Ge, ["≥"] = TokenKind.Ge,
-        ["=="] = TokenKind.Eq, ["!="] = TokenKind.Ne, ["≠"] = TokenKind.Ne,
-        ["&&"] = TokenKind.And, ["∧"] = TokenKind.And,
-        ["||"] = TokenKind.Or, ["∨"] = TokenKind.Or,
-        ["!"] = TokenKind.Not, ["¬"] = TokenKind.Not,
-        ["("] = TokenKind.LParen, [")"] = TokenKind.RParen,
-        ["{"] = TokenKind.LBrace, ["}"] = TokenKind.RBrace,
+        [":="] = TokenKind.Assign,
+        ["≔"] = TokenKind.Assign,
+        ["+"] = TokenKind.Plus,
+        ["-"] = TokenKind.Minus,
+        ["*"] = TokenKind.Star,
+        ["/"] = TokenKind.Slash,
+        ["<"] = TokenKind.Lt,
+        ["<="] = TokenKind.Le,
+        ["≤"] = TokenKind.Le,
+        [">"] = TokenKind.Gt,
+        [">="] = TokenKind.Ge,
+        ["≥"] = TokenKind.Ge,
+        ["=="] = TokenKind.Eq,
+        ["!="] = TokenKind.Ne,
+        ["≠"] = TokenKind.Ne,
+        ["&&"] = TokenKind.And,
+        [""] = TokenKind.And,
+        ["||"] = TokenKind.Or,
+        ["∨"] = TokenKind.Or,
+        ["!"] = TokenKind.Not,
+        ["¬"] = TokenKind.Not,
+        ["("] = TokenKind.LParen,
+        [")"] = TokenKind.RParen,
+        ["{"] = TokenKind.LBrace,
+        ["}"] = TokenKind.RBrace,
         [";"] = TokenKind.Semicolon,
     };
-    
+
     private static readonly Dictionary<string, TokenKind> Keywords = new()
     {
         ["if"] = TokenKind.If,
@@ -63,7 +73,7 @@ public static class AstLexer
         ["for"] = TokenKind.Loop,
         ["do"] = TokenKind.Loop,
     };
-    
+
     private static string DescribeUnexpected(char c) => c switch
     {
         '=' => "Одиночный '=': для присваивания используйте ':=', для сравнения '=='",

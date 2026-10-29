@@ -55,6 +55,8 @@ namespace UI.ViewModels
                 this.inputText = value;
                 this.Notify("InputText");
                 this.CheckPreConditions();
+                if (this.currentOperationTitle == "WP Калькулятор")
+                    this.CheckWpPreConditions();
             }
         }
 
@@ -142,6 +144,13 @@ namespace UI.ViewModels
             get { return this.isContractVisible; }
             set { this.isContractVisible = value; this.Notify("IsContractVisible"); }
         }
+        private System.Windows.Visibility isLr1Visible = System.Windows.Visibility.Visible;
+        public System.Windows.Visibility IsLr1Visible
+        {
+            get { return this.isLr1Visible; }
+            set { this.isLr1Visible = value; this.Notify("IsLr1Visible"); }
+        }
+
         // Методы управления видимостью
 
         private void UpdateOperationVisibility()
@@ -157,7 +166,87 @@ namespace UI.ViewModels
 
             this.IsContractVisible = (this.currentOperationTitle == "WP Калькулятор")
                 ? System.Windows.Visibility.Collapsed : System.Windows.Visibility.Visible;
+
+            this.IsLr1Visible = (this.currentOperationTitle == "WP Калькулятор")
+                ? System.Windows.Visibility.Collapsed : System.Windows.Visibility.Visible;
         }
+
+        private string wpPostCondition = "";
+        public string WpPostCondition
+        {
+            get { return this.wpPostCondition; }
+            set
+            {
+                this.wpPostCondition = value;
+                this.Notify("WpPostCondition");
+                if (this.currentOperationTitle == "WP Калькулятор")
+                    this.CheckWpPreConditions();
+            }
+        }
+
+        private string wpSteps = "";
+        public string WpSteps
+        {
+            get { return this.wpSteps; }
+            set
+            {
+                this.wpSteps = value;
+                this.Notify("WpSteps");
+            }
+        }
+
+        private string wpPre = "";
+        public string WpPre
+        {
+            get { return this.wpPre; }
+            set
+            {
+                this.wpPre = value;
+                this.Notify("WpPre");
+            }
+        }
+
+        private string wpTriad = "";
+        public string WpTriad
+        {
+            get { return this.wpTriad; }
+            set
+            {
+                this.wpTriad = value;
+                this.Notify("WpTriad");
+            }
+        }
+        private void CheckWpPreConditions()
+        {
+            if (this.currentOperationTitle != "WP Калькулятор")
+                return;
+
+            bool isMet = false;
+            string message = "";
+
+            // Проверяем, заполнены ли оба поля
+            if (string.IsNullOrWhiteSpace(this.inputText))
+            {
+                isMet = false;
+                message = "Поле 'Код программы' пустое";
+            }
+            else if (string.IsNullOrWhiteSpace(this.wpPostCondition))
+            {
+                isMet = false;
+                message = "Поле 'Цель (Post-условие)' пустое";
+            }
+            else
+            {
+                isMet = true;
+                message = "Готов к вычислению wp";
+            }
+
+            this.PreColor = isMet ? "Green" : "Red";
+            this.PreText = isMet ? "ВЫПОЛНЕНО" : "НЕ ВЫПОЛНЕНО: " + message;
+            this.PostColor = "Gray";
+            this.PostText = "ОЖИДАНИЕ ПРОВЕРКИ";
+        }
+
 
         // Индикаторы Post
         private string postColor = "Gray";
@@ -258,6 +347,10 @@ namespace UI.ViewModels
                     string keywordToUse = string.IsNullOrWhiteSpace(this.filterKeyword) ? "тест" : this.filterKeyword;
                     ProcessResult result = filter.FilterLinesByKeyword(this.inputText, keywordToUse);
                     this.HandleProcessResult(result);
+                }
+                else if (this.currentOperationTitle == "WP Калькулятор")
+                {
+                    this.CalculateWp();
                 }
 
                 this.Notify("InputText");
@@ -463,5 +556,73 @@ namespace UI.ViewModels
                 }
             }
         }
+
+        //Новое
+
+
+
+        private void CalculateWp()
+        {
+            // 1. Жёсткая проверка: если поле пустое, сразу показываем понятную ошибку
+            if (string.IsNullOrWhiteSpace(this.wpPostCondition))
+            {
+                this.WpSteps = "Ошибка: Поле 'Цель (Post-условие)' пустое. Проверьте, что вы ввели текст и привязка (Binding) в XAML работает.";
+                this.WpPre = "";
+                this.WpTriad = "";
+                this.PreColor = "Red";
+                this.PreText = "ОШИБКА: Постусловие не введено";
+                this.PostColor = "Red";
+                this.PostText = "НЕ ВЫПОЛНЕНО";
+                return;
+            }
+
+            try
+            {
+                string codeText = this.inputText;
+                string postConditionText = this.wpPostCondition;
+
+                // Отладочный вывод (видно в окне "Вывод" / "Output" в Visual Studio)
+                System.Diagnostics.Debug.WriteLine($"[WP DEBUG] Код программы: '{codeText}'");
+                System.Diagnostics.Debug.WriteLine($"[WP DEBUG] Постусловие: '{postConditionText}'");
+
+                var result = TextProcessor.Logic.AbstractSyntaxTree.WpFacade.Calculate(codeText, postConditionText);
+
+                if (result.IsSuccess)
+                {
+                    this.WpSteps = result.TraceText;
+                    this.WpPre = result.FinalWpShort + "\n\n" + result.FinalWpHuman;
+                    this.WpTriad = result.TriadNotation + "\n\n" + result.TriadWords;
+
+                    this.PreColor = "Green";
+                    this.PreText = "ВЫПОЛНЕНО";
+                    this.PostColor = "Green";
+                    this.PostText = "ВЫПОЛНЕНО";
+                }
+                else
+                {
+                    this.WpSteps = "Ошибка парсера: " + result.ErrorMessage;
+                    this.WpPre = "";
+                    this.WpTriad = "";
+
+                    this.PreColor = "Red";
+                    this.PreText = "ОШИБКА: " + result.ErrorMessage;
+                    this.PostColor = "Red";
+                    this.PostText = "НЕ ВЫПОЛНЕНО";
+                }
+            }
+            catch (Exception ex)
+            {
+                this.WpSteps = "Критическая ошибка: " + ex.Message;
+                this.PreColor = "Red";
+                this.PreText = "ОШИБКА: " + ex.Message;
+                this.PostColor = "Red";
+                this.PostText = "НЕ ВЫПОЛНЕНО";
+            }
+        }
+
+
+
     }
+        
+
 }

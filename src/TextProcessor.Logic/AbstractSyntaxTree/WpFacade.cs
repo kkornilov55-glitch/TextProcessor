@@ -73,8 +73,30 @@ public static class WpFacade
         if (string.IsNullOrWhiteSpace(postConditionText))
             return Fail("Постусловие (Post) не может быть пустым.");
 
-        //Разбор постусловия
+        // Отладка: показываем что пришло
+        System.Diagnostics.Debug.WriteLine($"[FACADE] Постусловие (длина {postConditionText.Length}): '{postConditionText}'");
+        System.Diagnostics.Debug.WriteLine($"[FACADE] Постусловие байты: {string.Join(" ", System.Text.Encoding.UTF8.GetBytes(postConditionText).Select(b => b.ToString()))}");
+
+        // Разбор постусловия
         var postLex = AstLexer.Tokenize(postConditionText);
+
+        // Отладка лексера
+        System.Diagnostics.Debug.WriteLine($"[FACADE] Лекс постусловия: токенов={postLex.Tokens.Count}, ошибок={postLex.Errors.Count}");
+        foreach (var token in postLex.Tokens)
+        {
+            System.Diagnostics.Debug.WriteLine($"[FACADE]   Токен: Kind={token.Kind}, Text='{token.Text}', Pos={token.Pos.Index}");
+        }
+        foreach (var error in postLex.Errors)
+        {
+            System.Diagnostics.Debug.WriteLine($"[FACADE]   Ошибка лексера: {error.Message} на позиции {error.Pos.Index}");
+        }
+
+        if (!postLex.Ok || postLex.Errors.Count > 0)
+        {
+            var err = postLex.Errors.FirstOrDefault();
+            return Fail($"Лексическая ошибка в постусловии: {err.Message} (позиция {err.Pos.Index})");
+        }
+
         var postParse = AstParser.ParsePredication(postLex);
         if (!postParse.Ok || postParse.Value is null)
         {
@@ -82,7 +104,7 @@ public static class WpFacade
             return Fail($"Ошибка в постусловии (строка {err.Pos.Line}, символ {err.Pos.Column}): {err.Message}");
         }
 
-        //Разбор кода программы
+        // Разбор кода программы
         var progLex = AstLexer.Tokenize(codeText);
         var progParse = AstParser.ParseProgram(progLex);
         if (!progParse.Ok || progParse.Value is null)
@@ -91,12 +113,12 @@ public static class WpFacade
             return Fail($"Ошибка в коде программы (строка {err.Pos.Line}, символ {err.Pos.Column}): {err.Message}");
         }
 
-        //Запуск wp-движка
+        // Запуск wp-движка
         var postAst = postParse.Value;
         var progAst = progParse.Value;
         var engineResult = WpEngine.Calculate(progAst, postAst);
 
-        //Форматирование результатов и триады Хоара
+        // Форматирование результатов
         var triad = AstHumanText.Triad(engineResult.FinalWp, progAst, postAst);
         string traceFormatted = FormatTrace(engineResult.Steps, postAst);
 

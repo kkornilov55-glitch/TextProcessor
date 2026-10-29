@@ -1,12 +1,11 @@
 ﻿<Window x:Class="UI.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Лабораторная работа №1: текстовый конвейер" 
+        Title="Лабораторная работа: текстовый конвейер и WP" 
         Height="800" Width="1200" 
         WindowStartupLocation="CenterScreen"
         Background="#F5F5F5">
     <Window.Resources>
-
         <!-- Стиль для кнопок операций -->
         <Style x:Key="DefaultButton" TargetType="Button">
             <Setter Property="Background" Value="White"/>
@@ -19,11 +18,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="8"
-                                Padding="{TemplateBinding Padding}">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="8" Padding="{TemplateBinding Padding}">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                     </ControlTemplate>
@@ -48,10 +43,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}"
-                                BorderThickness="0"
-                                CornerRadius="8"
-                                Padding="{TemplateBinding Padding}">
+                        <Border Background="{TemplateBinding Background}" BorderThickness="0" CornerRadius="8" Padding="{TemplateBinding Padding}">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                     </ControlTemplate>
@@ -74,13 +66,8 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="1"
-                        CornerRadius="8"
-                        Padding="{TemplateBinding Padding}">
-                            <ContentPresenter HorizontalAlignment="Center" 
-                                      VerticalAlignment="Center"/>
+                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                     </ControlTemplate>
                 </Setter.Value>
@@ -105,10 +92,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}"
-                                BorderThickness="0"
-                                CornerRadius="8"
-                                Padding="{TemplateBinding Padding}">
+                        <Border Background="{TemplateBinding Background}" BorderThickness="0" CornerRadius="8" Padding="{TemplateBinding Padding}">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                     </ControlTemplate>
@@ -120,10 +104,8 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
-
     </Window.Resources>
 
-    <!-- Основное окно -->
     <Grid Margin="20">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="250"/>
@@ -131,12 +113,7 @@
         </Grid.ColumnDefinitions>
 
         <!-- Левая часть -->
-        <Border Grid.Column="0" 
-                Background="White" 
-                CornerRadius="12" 
-                Padding="15"
-                Margin="0,0,10,0" BorderBrush="#FFC7C7CC" BorderThickness="1,1,1,1">
-
+        <Border Grid.Column="0" Background="White" CornerRadius="12" Padding="15" Margin="0,0,10,0" BorderBrush="#FFC7C7CC" BorderThickness="1">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -144,20 +121,15 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <TextBlock Grid.Row="0" 
-                           Text="Список операций" 
-                           FontSize="18" 
-                           FontWeight="Bold" 
-                           Margin="0,0,0,15" HorizontalAlignment="Center"/>
-                
-                <!-- Кнопки -->
+                <TextBlock Grid.Row="0" Text="Список операций" FontSize="18" FontWeight="Bold" Margin="0,0,0,15" HorizontalAlignment="Center"/>
+
                 <StackPanel Grid.Row="1" Margin="0,0,0,15">
                     <Button Style="{StaticResource DefaultButton}" Content="Нормализация текста" Click="BtnNormalization_Click"/>
                     <Button Style="{StaticResource DefaultButton}" Content="Маскирование" Click="BtnMasking_Click"/>
                     <Button Style="{StaticResource DefaultButton}" Content="Фильтрация строк" Click="BtnFiltering_Click"/>
                     <Button Style="{StaticResource DefaultButton}" Content="WP Калькулятор" Click="BtnWpCalculator_Click"/>
                 </StackPanel>
-                
+
                 <StackPanel Grid.Row="2">
                     <Button Style="{StaticResource UploadButton}" Content="⤴ Загрузить файл" Click="BtnLoadFile_Click"/>
                     <Button Style="{StaticResource DefaultButton}" Content="⤵ Скачать файл" Click="BtnSaveFile_Click"/>
@@ -166,145 +138,138 @@
         </Border>
 
         <!-- Правая часть -->
-        <Border Grid.Column="1" 
-                Background="White" 
-                CornerRadius="12" 
-                Padding="14"
-                BorderThickness="1,1,1,1"
-                BorderBrush="#FFC7C7CC">
+        <Border Grid.Column="1" Background="White" CornerRadius="12" Padding="14" BorderThickness="1" BorderBrush="#FFC7C7CC">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <!-- 0: Заголовок -->
+                        <RowDefinition Height="*"/>
+                        <!-- 1: Основное поле ввода -->
+                        <RowDefinition Height="Auto"/>
+                        <!-- 2: Ключевое слово -->
+                        <RowDefinition Height="Auto"/>
+                        <!-- 3: Тип маски -->
+                        <RowDefinition Height="Auto"/>
+                        <!-- 4: Код программы (WP) -->
+                        <RowDefinition Height="Auto"/>
+                        <!-- 5: Post-условие (WP) -->
+                        <RowDefinition Height="Auto"/>
+                        <!-- 6: Кнопка Выполнить -->
+                        <RowDefinition Height="Auto"/>
+                        <!-- 7: Результаты WP -->
+                        <RowDefinition Height="Auto"/>
+                        <!-- 8: Статус контракта -->
+                        <RowDefinition Height="Auto"/>
+                        <!-- 9: Кнопка Показать контракт -->
+                    </Grid.RowDefinitions>
 
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
+                        <!-- 0. Заголовок -->
+                    <TextBlock Grid.Row="0" Text="{Binding CurrentOperationTitle}" FontSize="18" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,10"/>
 
-                <!-- Заголовок -->
-                <TextBlock Grid.Row="0" 
-                           Text="{Binding CurrentOperationTitle}" 
-                           FontSize="18" 
-                           FontWeight="Bold" 
-                           HorizontalAlignment="Center"
-                           Margin="0,0,0,10"/>
+                    <!-- 1. Основное окно для текста -->
+                    <Border Grid.Row="1" CornerRadius="12" BorderBrush="#CCCCCC" BorderThickness="1" Background="White" ClipToBounds="True" Margin="0,0,0,8" Visibility="{Binding IsLr1Visible}">
+                        <TextBox TextWrapping="Wrap" AcceptsReturn="True" Padding="10" FontSize="14" FontFamily="Consolas"
+                                 Text="{Binding InputText, UpdateSourceTrigger=PropertyChanged}"
+                                 BorderThickness="0" Background="Transparent" VerticalAlignment="Stretch" Foreground="Black"/>
+                    </Border>
 
-                <!-- Основное окно для текста -->
-                <Border Grid.Row="1" CornerRadius="12" BorderBrush="#CCCCCC" BorderThickness="1" Background="White" ClipToBounds="True" Margin="0,0,0,8">
-                    <TextBox TextWrapping="Wrap" AcceptsReturn="True" Padding="10" FontSize="14"
-                             Text="{Binding InputText, UpdateSourceTrigger=PropertyChanged}"
-                             BorderThickness="0" Background="Transparent" VerticalAlignment="Stretch" Foreground="Black"/>
-                </Border>
+                    <!-- 2. Поле ключевого слова (видим только при фильтрации) -->
+                    <Border Grid.Row="2" Margin="0,0,0,8" Visibility="{Binding IsFilteringVisible}">
+                        <StackPanel>
+                            <TextBlock Text="Ключевое слово для фильтрации:" FontSize="12" FontWeight="Bold" Foreground="#666666" Margin="0,0,0,4"/>
+                            <Border CornerRadius="8" BorderBrush="#CCCCCC" BorderThickness="1" Background="#F9F9F9">
+                                <TextBox Text="{Binding FilterKeyword, UpdateSourceTrigger=PropertyChanged}" Padding="8,6" FontSize="13" BorderThickness="0" Background="Transparent"/>
+                            </Border>
+                        </StackPanel>
+                    </Border>
 
-                <!-- Поле ключевого слова (видим только при фильтрации) -->
-                <Border Grid.Row="2" Margin="0,0,0,8" Visibility="{Binding IsFilteringVisible}">
-                    <StackPanel>
-                        <TextBlock Text="Ключевое слово для фильтрации:" 
-                                   FontSize="12" 
-                                   FontWeight="Bold" 
-                                   Foreground="#666666" 
-                                   Margin="0,0,0,4"/>
-                        <Border CornerRadius="8" BorderBrush="#CCCCCC" BorderThickness="1" Background="#F9F9F9">
-                            <TextBox Text="{Binding FilterKeyword, UpdateSourceTrigger=PropertyChanged}"
-                                     Padding="8,6" FontSize="13" BorderThickness="0" Background="Transparent"
-                                     ToolTip="Введите слово для поиска (используется при операции 'Фильтрация строк')"/>
-                        </Border>
-                    </StackPanel>
-                </Border>
+                    <!-- 3. Выбор типа маски (видим только при маскировании) -->
+                    <Border Grid.Row="3" Margin="0,0,0,8" Visibility="{Binding IsMaskingOptionsVisible}">
+                        <StackPanel>
+                            <TextBlock Text="Тип маски для применения:" FontSize="12" FontWeight="Bold" Foreground="#666666" Margin="0,0,0,4"/>
+                            <ComboBox Text="{Binding SelectedMaskType, UpdateSourceTrigger=PropertyChanged}" Padding="8,6" FontSize="13" BorderBrush="#CCCCCC" BorderThickness="1" IsEditable="True" IsReadOnly="True">
+                                <ComboBoxItem Content="Телефон (10 цифр)"/>
+                                <ComboBoxItem Content="СНИЛС (11 цифр)"/>
+                                <ComboBoxItem Content="Банковская карта (16 цифр)"/>
+                            </ComboBox>
+                        </StackPanel>
+                    </Border>
 
-                <!-- Выбор типа маски (видим только при маскировании) -->
-                <Border Grid.Row="3" Margin="0,0,0,8" Visibility="{Binding IsMaskingOptionsVisible}">
-                    <StackPanel>
-                        <TextBlock Text="Тип маски для применения:" 
-                                   FontSize="12" 
-                                   FontWeight="Bold" 
-                                   Foreground="#666666" 
-                                   Margin="0,0,0,4"/>
-                        <ComboBox Text="{Binding SelectedMaskType, UpdateSourceTrigger=PropertyChanged}"
-                                  Padding="8,6" 
-                                  FontSize="13"
-                                  BorderBrush="#CCCCCC"
-                                  BorderThickness="1"
-                                  IsEditable="True"
-                                  IsReadOnly="True">
-                            <ComboBoxItem Content="Телефон (10 цифр)"/>
-                            <ComboBoxItem Content="СНИЛС (11 цифр)"/>
-                            <ComboBoxItem Content="Банковская карта (16 цифр)"/>
-                        </ComboBox>
-                    </StackPanel>
-                </Border>
-                <!-- Ввод Post-условия для WP-->
-                <Border Grid.Row="4" Margin="0,0,0,8" Visibility="{Binding IsWpVisible}">
-                    <StackPanel>
-                        <TextBlock Text="Цель (Post-условие):" FontSize="12" FontWeight="Bold" Foreground="#50C878" Margin="0,0,0,4"/>
-                        <Border CornerRadius="8" BorderBrush="#50C878" BorderThickness="1" Background="#E3F2FD">
-                            <TextBox Text="{Binding WpPostCondition, UpdateSourceTrigger=PropertyChanged}" 
-                                     Padding="8,6" FontSize="13" FontFamily="Consolas" 
-                                     BorderThickness="0" Background="Transparent" 
-                                     ToolTip="Например: max > 100"/>
-                        </Border>
-                    </StackPanel>
-                </Border>
-                <!-- Кнопка выполнить -->
-                <Button Grid.Row="5" Style="{StaticResource ExecuteButton}" Content="Выполнить" Click="BtnExecute_Click"/>
+                    <!-- 4. Поле для ввода кода программы (видим только при WP) -->
+                    <Border Grid.Row="4" Margin="0,0,0,8" Visibility="{Binding IsWpVisible}">
+                        <StackPanel>
+                            <TextBlock Text="Код программы:" FontSize="12" FontWeight="Bold" Foreground="#2196F3" Margin="0,0,0,4"/>
+                            <Border CornerRadius="8" BorderBrush="#2196F3" BorderThickness="1" Background="#E3F2FD">
+                                <TextBox Text="{Binding InputText, UpdateSourceTrigger=PropertyChanged}" Padding="8,6" FontSize="13" FontFamily="Consolas" BorderThickness="0" Background="Transparent" AcceptsReturn="True" TextWrapping="Wrap" Height="120"/>
+                            </Border>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- 5. Ввод Post-условия для WP (видим только при WP) -->
+                    <Border Grid.Row="5" Margin="0,0,0,8" Visibility="{Binding IsWpVisible}">
+                        <StackPanel>
+                            <TextBlock Text="Цель (Post-условие):" FontSize="12" FontWeight="Bold" Foreground="#50C878" Margin="0,0,0,4"/>
+                            <Border CornerRadius="8" BorderBrush="#50C878" BorderThickness="1" Background="#E8F5E9">
+                                <TextBox Text="{Binding WpPostCondition, UpdateSourceTrigger=PropertyChanged}" Padding="8,6" FontSize="13" FontFamily="Consolas" BorderThickness="0" Background="Transparent"/>
+                            </Border>
+                        </StackPanel>
+                    </Border>
                 
-                <!-- 6. Результаты WP -->
-                <Border Grid.Row="6" Margin="0,0,0,8" Visibility="{Binding IsWpVisible}">
-                    <StackPanel>
-                        <TextBlock Text="Пошаговый трейс:" FontWeight="Bold" FontSize="12" Margin="0,0,0,5"/>
-                        <TextBox Text="{Binding WpSteps}" Height="60" IsReadOnly="True" FontFamily="Consolas" FontSize="12" TextWrapping="Wrap" Background="#FFFFFF" Margin="0,0,0,10"/>
+                
 
-                        <TextBlock Text="Итоговое wp:" FontWeight="Bold" FontSize="12" Margin="0,0,0,5"/>
-                        <TextBox Text="{Binding WpPre}" Height="60" IsReadOnly="True" FontFamily="Consolas" FontSize="12" TextWrapping="Wrap" Background="#FFFFFF" Margin="0,0,0,10"/>
+                    <!-- 6. Кнопка выполнить -->
+                    <Button Grid.Row="6" Style="{StaticResource ExecuteButton}" Content="Выполнить" Click="BtnExecute_Click"/>
 
-                        <TextBlock Text="Триада Хоара:" FontWeight="Bold" FontSize="12" Margin="0,0,0,5"/>
-                        <TextBox Text="{Binding WpTriad}" Height="60" IsReadOnly="True" FontFamily="Consolas" FontSize="12" TextWrapping="Wrap" Background="#FFFFFF"/>
-                    </StackPanel>
-                </Border>
+                    <!-- 7. Результаты WP (видим только при WP) -->
+                    <Border Grid.Row="7" Margin="0,0,0,8" Visibility="{Binding IsWpVisible}">
+                        <StackPanel>
+                            <TextBlock Text="Пошаговый трейс:" FontWeight="Bold" FontSize="12" Margin="0,0,0,5"/>
+                            <TextBox Text="{Binding WpSteps}" Height="120" IsReadOnly="True" FontFamily="Consolas" FontSize="12" TextWrapping="Wrap" Background="#FFFFFF" Margin="0,0,0,10"/>
 
-                <!-- Статус контракта -->
-                <Border Grid.Row="7" BorderBrush="#CCCCCC" BorderThickness="1" CornerRadius="12" Padding="15" Margin="0,0,0,8">
-                    <StackPanel>
-                        <TextBlock Text="Статус контракта" FontSize="18" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,15"/>
+                            <TextBlock Text="Итоговое wp:" FontWeight="Bold" FontSize="12" Margin="0,0,0,5"/>
+                            <TextBox Text="{Binding WpPre}" Height="120" IsReadOnly="True" FontFamily="Consolas" FontSize="12" TextWrapping="Wrap" Background="#FFFFFF" Margin="0,0,0,10"/>
 
-                        <!-- Индикатор Pre -->
-                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                            <Border Width="35" Height="35" CornerRadius="17" Margin="0,0,10,0">
-                                <Border.Background>
-                                    <SolidColorBrush Color="{Binding PreColor}"/>
-                                </Border.Background>
-                                <TextBlock Text="✓" FontSize="20" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"/>
-                            </Border>
-                            <StackPanel VerticalAlignment="Center" MaxWidth="400">
-                                <TextBlock Text="PRE" FontSize="12" Foreground="Gray"/>
-                                <TextBlock Text="{Binding PreText}" FontSize="14" FontWeight="Bold" TextWrapping="Wrap"/>
+                            <TextBlock Text="Триада Хоара:" FontWeight="Bold" FontSize="12" Margin="0,0,0,5"/>
+                            <TextBox Text="{Binding WpTriad}" Height="120" IsReadOnly="True" FontFamily="Consolas" FontSize="12" TextWrapping="Wrap" Background="#FFFFFF"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- 8. Статус контракта (ИСПРАВЛЕНО: добавлен Visibility) -->
+                    <Border Grid.Row="8" BorderBrush="#CCCCCC" BorderThickness="1" CornerRadius="12" Padding="15" Margin="0,0,0,8" >
+                        <StackPanel>
+                            <TextBlock Text="Статус контракта" FontSize="18" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,15"/>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                                <Border Width="35" Height="35" CornerRadius="17" Margin="0,0,10,0">
+                                    <Border.Background>
+                                        <SolidColorBrush Color="{Binding PreColor}"/>
+                                    </Border.Background>
+                                    <TextBlock Text="✓" FontSize="20" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"/>
+                                </Border>
+                                <StackPanel VerticalAlignment="Center" MaxWidth="400">
+                                    <TextBlock Text="PRE" FontSize="12" Foreground="Gray"/>
+                                    <TextBlock Text="{Binding PreText}" FontSize="14" FontWeight="Bold" TextWrapping="Wrap"/>
+                                </StackPanel>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <Border Width="35" Height="35" CornerRadius="17" Margin="0,0,10,0">
+                                    <Border.Background>
+                                        <SolidColorBrush Color="{Binding PostColor}"/>
+                                    </Border.Background>
+                                    <TextBlock Text="✓" FontSize="20" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"/>
+                                </Border>
+                                <StackPanel VerticalAlignment="Center" MaxWidth="400">
+                                    <TextBlock Text="POST" FontSize="12" Foreground="Gray"/>
+                                    <TextBlock Text="{Binding PostText}" FontSize="14" FontWeight="Bold" TextWrapping="Wrap"/>
+                                </StackPanel>
                             </StackPanel>
                         </StackPanel>
+                    </Border>
 
-                        <!-- Индикатор Post -->
-                        <StackPanel Orientation="Horizontal">
-                            <Border Width="35" Height="35" CornerRadius="17" Margin="0,0,10,0">
-                                <Border.Background>
-                                    <SolidColorBrush Color="{Binding PostColor}"/>
-                                </Border.Background>
-                                <TextBlock Text="✓" FontSize="20" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"/>
-                            </Border>
-                            <StackPanel VerticalAlignment="Center" MaxWidth="400">
-                                <TextBlock Text="POST" FontSize="12" Foreground="Gray"/>
-                                <TextBlock Text="{Binding PostText}" FontSize="14" FontWeight="Bold" TextWrapping="Wrap"/>
-                            </StackPanel>
-                        </StackPanel>
-                    </StackPanel>
-                </Border>
-
-                <!-- 6. Кнопка показать контракт -->
-                <Button Grid.Row="8" Style="{StaticResource ContractButton}" Content="Показать контракт" Click="BtnShowContract_Click" Visibility="{Binding IsContractVisible}"/>
-            </Grid>
+                    <!-- 9. Кнопка показать контракт -->
+                    <Button Grid.Row="9" Style="{StaticResource ContractButton}" Content="Показать контракт" Click="BtnShowContract_Click"/>
+                </Grid>
+            </ScrollViewer>
         </Border>
     </Grid>
 </Window>
