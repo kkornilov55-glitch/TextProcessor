@@ -124,10 +124,29 @@
                 <TextBlock Grid.Row="0" Text="Список операций" FontSize="18" FontWeight="Bold" Margin="0,0,0,15" HorizontalAlignment="Center"/>
 
                 <StackPanel Grid.Row="1" Margin="0,0,0,15">
+                    <TextBlock Text="Лабораторная работа №1" 
+                       FontSize="11" 
+                       FontWeight="Bold" 
+                       Foreground="#666666" 
+                       HorizontalAlignment="Center"
+                       Margin="0,0,0,5"/>
+                    <!-- Кнопки ЛР-1 -->
                     <Button Style="{StaticResource DefaultButton}" Content="Нормализация текста" Click="BtnNormalization_Click"/>
                     <Button Style="{StaticResource DefaultButton}" Content="Маскирование" Click="BtnMasking_Click"/>
                     <Button Style="{StaticResource DefaultButton}" Content="Фильтрация строк" Click="BtnFiltering_Click"/>
+
+                    <!-- Разделитель между ЛР-1 и ЛР-2 -->
+                    <Border Height="1" Background="#E0E0E0" Margin="0,10,0,10" CornerRadius="2"/>
+                    <TextBlock Text="Лабораторная работа №2" 
+                       FontSize="11" 
+                       FontWeight="Bold" 
+                       Foreground="#666666" 
+                       HorizontalAlignment="Center"
+                       Margin="0,0,0,5"/>
+
+                    <!-- Кнопки ЛР-2 -->
                     <Button Style="{StaticResource DefaultButton}" Content="WP Калькулятор" Click="BtnWpCalculator_Click"/>
+                    <Button Style="{StaticResource DefaultButton}" Content="Справка по WP" Click="BtnWpHelp_Click"/>
                 </StackPanel>
 
                 <StackPanel Grid.Row="2">
@@ -224,14 +243,20 @@
                     <!-- 7. Результаты WP (видим только при WP) -->
                     <Border Grid.Row="7" Margin="0,0,0,8" Visibility="{Binding IsWpVisible}">
                         <StackPanel>
-                            <TextBlock Text="Пошаговый трейс:" FontWeight="Bold" FontSize="12" Margin="0,0,0,5"/>
-                            <TextBox Text="{Binding WpSteps}" Height="120" IsReadOnly="True" FontFamily="Consolas" FontSize="12" TextWrapping="Wrap" Background="#FFFFFF" Margin="0,0,0,10"/>
+                            <TextBlock Text="Пошаговый трейс:" FontWeight="Bold" FontSize="12" Margin="0,0,0,3"/>
+                            <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="150">
+                                <TextBox Text="{Binding WpSteps}" MinHeight="60" IsReadOnly="True" FontFamily="Consolas" FontSize="12" TextWrapping="Wrap" Background="#FFFFFF" Margin="0,0,0,5"/>
+                            </ScrollViewer>
 
-                            <TextBlock Text="Итоговое wp:" FontWeight="Bold" FontSize="12" Margin="0,0,0,5"/>
-                            <TextBox Text="{Binding WpPre}" Height="120" IsReadOnly="True" FontFamily="Consolas" FontSize="12" TextWrapping="Wrap" Background="#FFFFFF" Margin="0,0,0,10"/>
+                            <TextBlock Text="Итоговое wp:" FontWeight="Bold" FontSize="12" Margin="0,0,0,3"/>
+                            <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="100">
+                                <TextBox Text="{Binding WpPre}" MinHeight="50" IsReadOnly="True" FontFamily="Consolas" FontSize="12" TextWrapping="Wrap" Background="#FFFFFF" Margin="0,0,0,5"/>
+                            </ScrollViewer>
 
-                            <TextBlock Text="Триада Хоара:" FontWeight="Bold" FontSize="12" Margin="0,0,0,5"/>
-                            <TextBox Text="{Binding WpTriad}" Height="120" IsReadOnly="True" FontFamily="Consolas" FontSize="12" TextWrapping="Wrap" Background="#FFFFFF"/>
+                            <TextBlock Text="Триада Хоара:" FontWeight="Bold" FontSize="12" Margin="0,0,0,3"/>
+                            <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="150">
+                                <TextBox Text="{Binding WpTriad}" MinHeight="60" IsReadOnly="True" FontFamily="Consolas" FontSize="12" TextWrapping="Wrap" Background="#FFFFFF"/>
+                            </ScrollViewer>
                         </StackPanel>
                     </Border>
 
@@ -267,7 +292,7 @@
                     </Border>
 
                     <!-- 9. Кнопка показать контракт -->
-                    <Button Grid.Row="9" Style="{StaticResource ContractButton}" Content="Показать контракт" Click="BtnShowContract_Click"/>
+                    <Button Grid.Row="9" Style="{StaticResource ContractButton}" Content="Показать контракт" Click="BtnShowContract_Click" Visibility="{Binding IsContractVisible}"/>
                 </Grid>
             </ScrollViewer>
         </Border>
