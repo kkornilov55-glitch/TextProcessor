@@ -240,8 +240,8 @@
                     <!-- 6. Кнопка выполнить -->
                     <Button Grid.Row="6" Style="{StaticResource ExecuteButton}" Content="Выполнить" Click="BtnExecute_Click"/>
 
-                    <!-- 7. Результаты WP (видим только при WP) -->
-                    <Border Grid.Row="7" Margin="0,0,0,8" Visibility="{Binding IsWpVisible}">
+                    <!-- 7. Результаты WP -->
+                    <Border Grid.Row="8" Margin="0,0,0,8" Visibility="{Binding IsWpVisible}">
                         <StackPanel>
                             <TextBlock Text="Пошаговый трейс:" FontWeight="Bold" FontSize="12" Margin="0,0,0,3"/>
                             <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="150">
@@ -260,8 +260,8 @@
                         </StackPanel>
                     </Border>
 
-                    <!-- 8. Статус контракта (ИСПРАВЛЕНО: добавлен Visibility) -->
-                    <Border Grid.Row="8" BorderBrush="#CCCCCC" BorderThickness="1" CornerRadius="12" Padding="15" Margin="0,0,0,8" >
+                    <!-- 8. Статус контракта -->
+                    <Border Grid.Row="7" BorderBrush="#CCCCCC" BorderThickness="1" CornerRadius="12" Padding="15" Margin="0,0,0,8" >
                         <StackPanel>
                             <TextBlock Text="Статус контракта" FontSize="18" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,15"/>
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,10">

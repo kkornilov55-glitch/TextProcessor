@@ -557,16 +557,22 @@ namespace UI.ViewModels
             }
         }
 
-        //Новое
+        private ContractWindow _helpWindow;
+
         public void ShowWpHelp()
         {
+            if (_helpWindow != null && _helpWindow.IsVisible)
+            {
+                _helpWindow.Activate();
+                return;
+            }
+
             ContractViewModel helpViewModel = new ContractViewModel("WP Калькулятор");
-            ContractWindow helpWindow = new ContractWindow(helpViewModel);
-
-            // Переименовываем окно из "Контракт операции" в "Справка"
-            helpWindow.Title = "Справка: WP Калькулятор";
-
-            helpWindow.ShowDialog();
+            _helpWindow = new ContractWindow(helpViewModel);
+            _helpWindow.Title = "Справка: WP Калькулятор";
+            _helpWindow.Owner = System.Windows.Application.Current.MainWindow;
+            _helpWindow.Closed += (s, e) => _helpWindow = null; 
+            _helpWindow.Show();
         }
 
 
