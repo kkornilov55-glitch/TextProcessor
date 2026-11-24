@@ -69,5 +69,9 @@ namespace UI
         {
             this.viewModel.SelectWpCalculator();
         }
+        private void BtnWpHelp_Click(object sender, RoutedEventArgs e)
+        {
+            this.viewModel.ShowWpHelp();
+        }
     }
 }

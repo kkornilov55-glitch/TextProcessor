@@ -50,7 +50,6 @@ public static class AstLexer
         ["!="] = TokenKind.Ne,
         ["≠"] = TokenKind.Ne,
         ["&&"] = TokenKind.And,
-        [""] = TokenKind.And,
         ["||"] = TokenKind.Or,
         ["∨"] = TokenKind.Or,
         ["!"] = TokenKind.Not,
@@ -103,25 +102,36 @@ public static class AstLexer
                 continue;
             }
 
-            if (tokenMatch.Groups["ws"].Success)
+            string matched = tokenMatch.Value;
+
+            // 1. Пропускаем пробелы и считаем переносы строк
+            if (string.IsNullOrWhiteSpace(matched))
             {
-                for (uint i = 0; i < tokenMatch.Length; i++)
-                    if (tokenMatch.Value[(int)i] == '\n') { line++; lineStart = pos + i + 1; }
+                for (uint i = 0; i < matched.Length; i++)
+                    if (matched[(int)i] == '\n') { line++; lineStart = pos + i + 1; }
             }
-            else if (tokenMatch.Groups["num"].Success)
+            // 2. Число
+            else if (char.IsDigit(matched[0]))
             {
-                tokens.Add(new(TokenKind.Number, tokenMatch.Value, here));
+                tokens.Add(new Token(TokenKind.Number, matched, here));
             }
-            else if (tokenMatch.Groups["id"].Success)
+            // 3. Идентификатор или ключевое слово
+            else if (char.IsLetter(matched[0]) || matched[0] == '_')
             {
-                tokens.Add(new Token(Keywords.GetValueOrDefault(tokenMatch.Value, TokenKind.Ident), tokenMatch.Value, here));
+                tokens.Add(new Token(Keywords.GetValueOrDefault(matched, TokenKind.Ident), matched, here));
             }
-            else if (tokenMatch.Groups["op"].Success)
+            // 4. Оператор
+            else if (Operators.ContainsKey(matched))
             {
-                tokens.Add(new Token(Operators[tokenMatch.Value], tokenMatch.Value, here));
+                tokens.Add(new Token(Operators[matched], matched, here));
+            }
+            // 5. Неизвестный символ
+            else
+            {
+                errors.Add(new LexError($"Неизвестный символ или оператор: '{matched}'", here));
             }
 
-            pos += (uint)tokenMatch.Length;
+            pos += (uint)matched.Length;
         }
 
         tokens.Add(new Token(TokenKind.Eof, string.Empty, new SourcePos(pos, line, pos - lineStart + 1)));
