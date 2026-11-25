@@ -598,6 +598,24 @@ namespace UI.ViewModels
             }
         }
 
+        private UI.LoopWindow? loopWindow;
+
+        public void ShowLoopLab()
+        {
+            if (this.loopWindow != null && this.loopWindow.IsVisible)
+            {
+                this.loopWindow.Activate();
+                return;
+            }
+
+            this.loopWindow = new UI.LoopWindow
+            {
+                Owner = System.Windows.Application.Current.MainWindow
+            };
+            this.loopWindow.Closed += (_, _) => this.loopWindow = null;
+            this.loopWindow.Show();
+        }
+
         private ContractWindow _helpWindow;
 
         public void ShowWpHelp()
