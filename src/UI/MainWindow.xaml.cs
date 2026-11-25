@@ -9,6 +9,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using UI.ViewModels;
+using TextProcessor.Logic.AbstractSyntaxTree;
 
 namespace UI
 {
@@ -72,6 +73,21 @@ namespace UI
         private void BtnWpHelp_Click(object sender, RoutedEventArgs e)
         {
             this.viewModel.ShowWpHelp();
+        }
+
+        private void BtnLoadWpPreset_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.WpPresetPicker.SelectedItem is WpPreset preset)
+                this.viewModel.LoadWpPreset(preset);
+        }
+
+        private void BtnStoryHelp_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show(this,
+                "Вы работаете в службе поддержки и разбираете обращения о проблемах с VPN, почтой и доступом.\n\n" +
+                "ЛР1. Оператор приводит описание заявки и данные заявителя к единому виду, а затем ищет обращения по ключевым словам. Индикаторы Pre и Post показывают, выполнены ли условия операции.\n\n" +
+                "ЛР2. На примерах с очередями и нагрузкой калькулятор wp отвечает на вопрос, что должно быть верно до выполнения правила, чтобы получить нужный результат.",
+                "О сюжете — Журнал обращений", MessageBoxButton.OK, MessageBoxImage.Information);
         }
     }
 }
