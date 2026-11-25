@@ -17,9 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="TextProcessor.Logic">
-      <HintPath>..\..\..\src\TextProcessor.Logic\bin\Debug\net9.0\TextProcessor.Logic.dll</HintPath>
-    </Reference>
+    <Reference Include="..\..\..\src\TextProcessor.Logic\TextProcessor.Logic.csproj" />
   </ItemGroup>
 
   <ItemGroup>
