@@ -1,0 +1,452 @@
+<Window x:Class="UI.LoopWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="ЛР3 — Циклы под микроскопом"
+        Height="900" Width="1360"
+        MinHeight="650" MinWidth="1050"
+        WindowStartupLocation="CenterScreen"
+        Background="#F5F5F5">
+    <Window.Resources>
+        <Style x:Key="DefaultButton" TargetType="Button">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#FFC7C7CC"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Padding" Value="14,8"/>
+            <Setter Property="Margin" Value="0,0,6,0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="8" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#F0F0F0"/>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Opacity" Value="0.45"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="AccentButton" TargetType="Button" BasedOn="{StaticResource DefaultButton}">
+            <Setter Property="Background" Value="#E53935"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#C62828"/>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Opacity" Value="0.45"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="DarkButton" TargetType="Button" BasedOn="{StaticResource DefaultButton}">
+            <Setter Property="Background" Value="Black"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#333333"/>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Opacity" Value="0.45"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="CardBorder" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="Padding" Value="14"/>
+            <Setter Property="BorderBrush" Value="#FFC7C7CC"/>
+            <Setter Property="BorderThickness" Value="1"/>
+        </Style>
+
+        <Style x:Key="SectionTitle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="#333333"/>
+            <Setter Property="Margin" Value="0,0,0,10"/>
+        </Style>
+
+        <Style x:Key="FieldLabel" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="#666666"/>
+            <Setter Property="Margin" Value="0,0,0,4"/>
+        </Style>
+
+        <Style x:Key="FormulaBox" TargetType="TextBox">
+            <Setter Property="FontFamily" Value="Consolas"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="IsReadOnly" Value="True"/>
+            <Setter Property="Background" Value="#F9F9F9"/>
+            <Setter Property="BorderBrush" Value="#E0E0E0"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="8,6"/>
+        </Style>
+
+        <Style x:Key="DataRow" TargetType="DataGridRow">
+            <Setter Property="Background" Value="White"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsProcessed}" Value="True">
+                    <Setter Property="Background" Value="#E8F5E9"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsLastProcessed}" Value="True">
+                    <Setter Property="Background" Value="#E3F2FD"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsCurrent}" Value="True">
+                    <Setter Property="Background" Value="#FFF3E0"/>
+                    <Setter Property="FontWeight" Value="Bold"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="16">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="390"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Border Grid.Column="0" Style="{StaticResource CardBorder}" Margin="0,0,10,0">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <TextBlock Text="Циклы под микроскопом" FontSize="18" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,3"/>
+                    <TextBlock Text="Лабораторная работа №3 · MVVM" FontSize="11" FontWeight="Bold" Foreground="#666666" HorizontalAlignment="Center" Margin="0,0,0,10"/>
+                    <Button Content="← Вернуться в главное окно" Style="{StaticResource DarkButton}" Click="BtnReturn_Click" Margin="0,0,0,12"/>
+
+                    <TextBlock Text="Режим цикла" Style="{StaticResource FieldLabel}"/>
+                    <ComboBox ItemsSource="{Binding Presets}" DisplayMemberPath="Title"
+                              SelectedItem="{Binding SelectedPreset}" Padding="8,6" FontSize="13"
+                              Margin="0,0,0,8" BorderBrush="#CCCCCC"/>
+
+                    <TextBlock Text="Тело цикла S" Style="{StaticResource FieldLabel}" Foreground="#2196F3"/>
+                    <TextBox Text="{Binding BodyCodeText, Mode=OneWay}" IsReadOnly="True" Style="{StaticResource FormulaBox}" Height="112" Margin="0,0,0,8"/>
+
+                    <Grid Margin="0,0,0,12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Условие B: " FontSize="12" Foreground="#666666"/>
+                        <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding GuardText}" FontSize="12" FontFamily="Consolas" Foreground="#333333"/>
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Вариант t: " FontSize="12" Foreground="#666666"/>
+                        <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding VariantText}" FontSize="12" FontFamily="Consolas" Foreground="#333333"/>
+                    </Grid>
+
+                    <Border Height="1" Background="#E0E0E0" Margin="0,0,0,12"/>
+
+                    <TextBlock Text="Панель «Данные»" Style="{StaticResource SectionTitle}"/>
+                    <Grid Margin="0,0,0,8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,6,6">
+                            <TextBlock Text="Длина n (1–40)" Style="{StaticResource FieldLabel}"/>
+                            <TextBox Text="{Binding ArrayLengthText, UpdateSourceTrigger=PropertyChanged}" Padding="8,6" FontSize="13" BorderBrush="#CCCCCC"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="0" Grid.Column="1" Margin="6,0,0,6">
+                            <TextBlock Text="Порог T" Style="{StaticResource FieldLabel}"/>
+                            <TextBox Text="{Binding ThresholdText, UpdateSourceTrigger=PropertyChanged}" Padding="8,6" FontSize="13" BorderBrush="#CCCCCC"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,6,0">
+                            <TextBlock Text="Минимум" Style="{StaticResource FieldLabel}"/>
+                            <TextBox Text="{Binding MinValueText, UpdateSourceTrigger=PropertyChanged}" Padding="8,6" FontSize="13" BorderBrush="#CCCCCC"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="1" Grid.Column="1" Margin="6,0,0,0">
+                            <TextBlock Text="Максимум" Style="{StaticResource FieldLabel}"/>
+                            <TextBox Text="{Binding MaxValueText, UpdateSourceTrigger=PropertyChanged}" Padding="8,6" FontSize="13" BorderBrush="#CCCCCC"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <Button Content="Сгенерировать массив" Style="{StaticResource DarkButton}" Click="BtnGenerateArray_Click" Margin="0,0,0,10"/>
+
+                    <TextBlock Text="Массив a[i] (значения можно редактировать)" Style="{StaticResource FieldLabel}"/>
+                    <DataGrid ItemsSource="{Binding Cells}" AutoGenerateColumns="False" CanUserAddRows="False"
+                              CanUserDeleteRows="False" HeadersVisibility="Column" RowStyle="{StaticResource DataRow}"
+                              GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="#EEEEEE"
+                              BorderBrush="#DDDDDD" BorderThickness="1" Height="270" Margin="0,0,0,6"
+                              FontSize="12" SelectionMode="Single" RowHeight="26">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="#" Binding="{Binding Index}" IsReadOnly="True" Width="40"/>
+                            <DataGridTextColumn Header="a[i]" Binding="{Binding Value, UpdateSourceTrigger=PropertyChanged}" Width="70"/>
+                            <DataGridTextColumn Header="Состояние" Binding="{Binding StatusText}" IsReadOnly="True" Width="*"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <WrapPanel Margin="0,0,0,8">
+                        <Border Width="12" Height="12" Background="#FFF3E0" BorderBrush="#FFC7C7CC" BorderThickness="1" CornerRadius="2" Margin="0,0,4,0"/>
+                        <TextBlock Text="j  " FontSize="11" Foreground="#666666" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                        <Border Width="12" Height="12" Background="#E3F2FD" BorderBrush="#FFC7C7CC" BorderThickness="1" CornerRadius="2" Margin="0,0,4,0"/>
+                        <TextBlock Text="шаг  " FontSize="11" Foreground="#666666" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                        <Border Width="12" Height="12" Background="#E8F5E9" BorderBrush="#FFC7C7CC" BorderThickness="1" CornerRadius="2" Margin="0,0,4,0"/>
+                        <TextBlock Text="обработано" FontSize="11" Foreground="#666666" VerticalAlignment="Center"/>
+                    </WrapPanel>
+
+                    <TextBlock Text="{Binding StatusMessage}" FontSize="12" Foreground="#666666" TextWrapping="Wrap"/>
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+
+        <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <Border Style="{StaticResource CardBorder}" Margin="0,0,0,10">
+                    <StackPanel>
+                        <TextBlock Text="Исполнение" Style="{StaticResource SectionTitle}"/>
+                        <TextBlock Text="{Binding StateText}" FontSize="14" FontWeight="Bold" Foreground="#333333" Margin="0,0,0,8"/>
+
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                            <Button Content="Шаг" Style="{StaticResource DefaultButton}" Click="BtnStep_Click" IsEnabled="{Binding CanStep}"/>
+                            <Button Content="Пуск" Style="{StaticResource AccentButton}" Click="BtnRun_Click" IsEnabled="{Binding CanRun}"/>
+                            <Button Content="Стоп" Style="{StaticResource DefaultButton}" Click="BtnStop_Click" IsEnabled="{Binding CanStop}"/>
+                            <Button Content="Сброс" Style="{StaticResource DefaultButton}" Click="BtnReset_Click" Margin="0"/>
+                        </StackPanel>
+
+                        <Grid Margin="0,0,0,6">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="Убывание t: " FontSize="12" Foreground="#666666" VerticalAlignment="Center"/>
+                            <ProgressBar Grid.Column="1" Height="14" Minimum="0" Maximum="{Binding VariantMaximum}"
+                                         Value="{Binding VariantValue, Mode=OneWay}" Foreground="#E53935" Background="#F0F0F0"/>
+                        </Grid>
+
+                        <TextBlock Text="{Binding VariantHistoryText}" FontFamily="Consolas" FontSize="12" Foreground="#666666" TextWrapping="Wrap" Margin="0,0,0,8"/>
+
+                        <Grid Margin="0,0,0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Текущий j: " FontSize="12" Foreground="#666666"/>
+                            <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding CurrentIndexText}" FontSize="12" FontFamily="Consolas"/>
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Шагов: " FontSize="12" Foreground="#666666"/>
+                            <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding StepCountText}" FontSize="12" FontFamily="Consolas"/>
+                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Последний шаг: " FontSize="12" Foreground="#666666"/>
+                            <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding LastStepText}" FontSize="12" TextWrapping="Wrap"/>
+                        </Grid>
+
+                        <StackPanel Orientation="Horizontal">
+                            <Border Width="34" Height="34" CornerRadius="17" Margin="0,0,10,0">
+                                <Border.Background>
+                                    <SolidColorBrush Color="{Binding PostColor}"/>
+                                </Border.Background>
+                                <TextBlock Text="✓" FontSize="20" Foreground="White" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Text="POST" FontSize="12" Foreground="Gray"/>
+                                <TextBlock Text="{Binding PostText}" FontSize="14" FontWeight="Bold" TextWrapping="Wrap"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource CardBorder}" Margin="0,0,0,10">
+                    <StackPanel>
+                        <TextBlock Text="Инвариант и вариант" Style="{StaticResource SectionTitle}"/>
+
+                        <TextBlock Text="Инвариант (словами)" Style="{StaticResource FieldLabel}"/>
+                        <TextBox Text="{Binding InvariantWords, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap"
+                                 AcceptsReturn="True" Height="52" Padding="8,6" FontSize="13" Margin="0,0,0,8"
+                                 BorderBrush="#CCCCCC"/>
+
+                        <TextBlock Text="Инвариант (формула в одну строку)" Style="{StaticResource FieldLabel}" Foreground="#2196F3"/>
+                        <TextBox Text="{Binding InvariantFormula, UpdateSourceTrigger=PropertyChanged}" FontFamily="Consolas"
+                                 FontSize="13" Padding="8,6" Margin="0,0,0,4" BorderBrush="#2196F3" Background="#E3F2FD"/>
+
+                        <TextBlock Text="{Binding InvariantParseError}" FontSize="12" Foreground="#C62828" TextWrapping="Wrap" Margin="0,2,0,6"/>
+                        <TextBlock Text="{Binding InvariantHuman, StringFormat='Разбор по-русски: {0}'}" FontSize="12" Foreground="#666666" TextWrapping="Wrap" Margin="0,0,0,10"/>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Border Grid.Column="0" Background="#F9F9F9" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" Padding="10" Margin="0,0,5,0">
+                                <StackPanel Orientation="Horizontal">
+                                    <Border Width="26" Height="26" CornerRadius="13" Margin="0,0,8,0">
+                                        <Border.Background>
+                                            <SolidColorBrush Color="{Binding InvariantBeforeColor}"/>
+                                        </Border.Background>
+                                        <TextBlock Text="✓" FontSize="16" Foreground="White" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                    <StackPanel VerticalAlignment="Center">
+                                        <TextBlock Text="ДО шага" FontSize="11" Foreground="Gray"/>
+                                        <TextBlock Text="{Binding InvariantBeforeText}" FontSize="12" FontWeight="Bold" TextWrapping="Wrap"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+                            <Border Grid.Column="1" Background="#F9F9F9" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" Padding="10" Margin="5,0,0,0">
+                                <StackPanel Orientation="Horizontal">
+                                    <Border Width="26" Height="26" CornerRadius="13" Margin="0,0,8,0">
+                                        <Border.Background>
+                                            <SolidColorBrush Color="{Binding InvariantAfterColor}"/>
+                                        </Border.Background>
+                                        <TextBlock Text="✓" FontSize="16" Foreground="White" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                    <StackPanel VerticalAlignment="Center">
+                                        <TextBlock Text="ПОСЛЕ шага" FontSize="11" Foreground="Gray"/>
+                                        <TextBlock Text="{Binding InvariantAfterText}" FontSize="12" FontWeight="Bold" TextWrapping="Wrap"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource CardBorder}" Margin="0,0,0,10">
+                    <StackPanel>
+                        <TextBlock Text="Контракт цикла" Style="{StaticResource SectionTitle}"/>
+                        <Grid Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Pre: " FontSize="12" Foreground="#E53935" FontWeight="Bold"/>
+                            <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding PreText}" FontSize="12" TextWrapping="Wrap"/>
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Inv: " FontSize="12" Foreground="#2196F3" FontWeight="Bold"/>
+                            <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding InvariantFormula}" FontSize="12" FontFamily="Consolas" TextWrapping="Wrap"/>
+                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Post: " FontSize="12" Foreground="#4CAF50" FontWeight="Bold"/>
+                            <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding PostFormulaText}" FontSize="12" FontFamily="Consolas" TextWrapping="Wrap"/>
+                            <TextBlock Grid.Row="3" Grid.Column="0" Text="t: " FontSize="12" Foreground="#666666" FontWeight="Bold"/>
+                            <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding VariantText}" FontSize="12" FontFamily="Consolas"/>
+                            <TextBlock Grid.Row="4" Grid.Column="0" Text="Смысл Post: " FontSize="12" Foreground="#666666" FontWeight="Bold"/>
+                            <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding PostWordsText}" FontSize="12" TextWrapping="Wrap"/>
+                        </Grid>
+
+                        <TextBlock Text="Четыре условия тотальной корректности" Style="{StaticResource FieldLabel}"/>
+                        <UniformGrid Columns="2" Rows="2">
+                            <Border Background="#F9F9F9" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" Padding="10" Margin="0,0,5,5">
+                                <StackPanel Orientation="Horizontal">
+                                    <Border Width="22" Height="22" CornerRadius="11" Margin="0,0,8,0">
+                                        <Border.Background>
+                                            <SolidColorBrush Color="{Binding InitializationColor}"/>
+                                        </Border.Background>
+                                        <TextBlock Text="✓" FontSize="14" Foreground="White" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                    <StackPanel>
+                                        <TextBlock Text="1. Инициализация" FontSize="12" FontWeight="Bold"/>
+                                        <TextBlock Text="{Binding InitializationStatus}" FontSize="11" Foreground="#666666" TextWrapping="Wrap"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+                            <Border Background="#F9F9F9" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" Padding="10" Margin="5,0,0,5">
+                                <StackPanel Orientation="Horizontal">
+                                    <Border Width="22" Height="22" CornerRadius="11" Margin="0,0,8,0">
+                                        <Border.Background>
+                                            <SolidColorBrush Color="{Binding PreservationStatusColor}"/>
+                                        </Border.Background>
+                                        <TextBlock Text="✓" FontSize="14" Foreground="White" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                    <StackPanel>
+                                        <TextBlock Text="2. Сохранение" FontSize="12" FontWeight="Bold"/>
+                                        <TextBlock Text="{Binding PreservationStatus}" FontSize="11" Foreground="#666666" TextWrapping="Wrap"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+                            <Border Background="#F9F9F9" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" Padding="10" Margin="0,5,5,0">
+                                <StackPanel Orientation="Horizontal">
+                                    <Border Width="22" Height="22" CornerRadius="11" Margin="0,0,8,0">
+                                        <Border.Background>
+                                            <SolidColorBrush Color="{Binding ExitColor}"/>
+                                        </Border.Background>
+                                        <TextBlock Text="✓" FontSize="14" Foreground="White" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                    <StackPanel>
+                                        <TextBlock Text="3. Выход" FontSize="12" FontWeight="Bold"/>
+                                        <TextBlock Text="{Binding ExitStatus}" FontSize="11" Foreground="#666666" TextWrapping="Wrap"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+                            <Border Background="#F9F9F9" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" Padding="10" Margin="5,5,0,0">
+                                <StackPanel Orientation="Horizontal">
+                                    <Border Width="22" Height="22" CornerRadius="11" Margin="0,0,8,0">
+                                        <Border.Background>
+                                            <SolidColorBrush Color="{Binding TerminationColor}"/>
+                                        </Border.Background>
+                                        <TextBlock Text="✓" FontSize="14" Foreground="White" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                    <StackPanel>
+                                        <TextBlock Text="4. Завершение" FontSize="12" FontWeight="Bold"/>
+                                        <TextBlock Text="{Binding TerminationStatus}" FontSize="11" Foreground="#666666" TextWrapping="Wrap"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+                        </UniformGrid>
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource CardBorder}">
+                    <StackPanel>
+                        <TextBlock Text="Проверка сохранения (wp)" Style="{StaticResource SectionTitle}"/>
+                        <Border Background="#E3F2FD" BorderBrush="#2196F3" BorderThickness="1" CornerRadius="8" Padding="10" Margin="0,0,0,8">
+                            <TextBlock Text="(Inv &amp;&amp; B) ⇒ wp(S, Inv)" FontFamily="Consolas" FontSize="13" Foreground="#333333" TextWrapping="Wrap"/>
+                        </Border>
+
+                        <TextBlock Text="Условие верификации (VC)" Style="{StaticResource FieldLabel}"/>
+                        <TextBox Text="{Binding VerificationCondition, Mode=OneWay}" IsReadOnly="True" Style="{StaticResource FormulaBox}" Height="58" Margin="0,0,0,8"/>
+
+                        <TextBlock Text="После упрощения" Style="{StaticResource FieldLabel}"/>
+                        <TextBox Text="{Binding SimplifiedCondition, Mode=OneWay}" IsReadOnly="True" Style="{StaticResource FormulaBox}" Height="42" Margin="0,0,0,8"/>
+
+                        <TextBlock Text="{Binding VerificationHuman, StringFormat='Разбор по-русски: {0}'}" FontSize="12" Foreground="#666666" TextWrapping="Wrap" Margin="0,0,0,10"/>
+
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                            <Border Width="30" Height="30" CornerRadius="15" Margin="0,0,10,0">
+                                <Border.Background>
+                                    <SolidColorBrush Color="{Binding PreservationColor}"/>
+                                </Border.Background>
+                                <TextBlock Text="✓" FontSize="18" Foreground="White" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Text="СОХРАНЕНИЕ ИНВАРИАНТА" FontSize="11" Foreground="Gray"/>
+                                <TextBlock Text="{Binding PreservationText}" FontSize="13" FontWeight="Bold"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <TextBlock Text="wp(S, Inv) словами" Style="{StaticResource FieldLabel}" Foreground="#50C878"/>
+                        <TextBox Text="{Binding WpHumanText, Mode=OneWay}" IsReadOnly="True" Style="{StaticResource FormulaBox}" Height="58" Margin="0,0,0,8"/>
+
+                        <TextBlock Text="Пошаговый трейс wp (ЛР2)" Style="{StaticResource FieldLabel}"/>
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="180">
+                            <TextBox Text="{Binding WpTraceText, Mode=OneWay}" IsReadOnly="True" Style="{StaticResource FormulaBox}" MinHeight="90"/>
+                        </ScrollViewer>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Window>

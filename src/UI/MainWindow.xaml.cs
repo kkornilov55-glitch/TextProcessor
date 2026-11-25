@@ -81,6 +81,11 @@ namespace UI
                 this.viewModel.LoadWpPreset(preset);
         }
 
+        private void BtnLoopLab_Click(object sender, RoutedEventArgs e)
+        {
+            this.viewModel.ShowLoopLab();
+        }
+
         private void BtnStoryHelp_Click(object sender, RoutedEventArgs e)
         {
             MessageBox.Show(this,

@@ -147,6 +147,15 @@
                     <!-- Кнопки ЛР-2 -->
                     <Button Style="{StaticResource DefaultButton}" Content="Калькулятор wp" Click="BtnWpCalculator_Click"/>
                     <Button Style="{StaticResource DefaultButton}" Content="Справка по wp" Click="BtnWpHelp_Click"/>
+
+                    <Border Height="1" Background="#E0E0E0" Margin="0,10,0,10" CornerRadius="2"/>
+                    <TextBlock Text="Лабораторная работа №3" 
+                       FontSize="11" 
+                       FontWeight="Bold" 
+                       Foreground="#666666" 
+                       HorizontalAlignment="Center"
+                       Margin="0,0,0,5"/>
+                    <Button Style="{StaticResource DefaultButton}" Content="Циклы под микроскопом" Click="BtnLoopLab_Click"/>
                 </StackPanel>
 
                 <StackPanel Grid.Row="2">

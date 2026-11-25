@@ -598,6 +598,31 @@ namespace UI.ViewModels
             }
         }
 
+        private UI.LoopWindow? loopWindow;
+
+        public void ShowLoopLab()
+        {
+            if (this.loopWindow != null && this.loopWindow.IsVisible)
+            {
+                this.loopWindow.Activate();
+                return;
+            }
+
+            Window mainWindow = System.Windows.Application.Current.MainWindow;
+            System.Windows.Application.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
+
+            this.loopWindow = new UI.LoopWindow();
+            this.loopWindow.Closed += (_, _) =>
+            {
+                this.loopWindow = null;
+                mainWindow.Show();
+                mainWindow.Activate();
+                System.Windows.Application.Current.ShutdownMode = ShutdownMode.OnLastWindowClose;
+            };
+            this.loopWindow.Show();
+            mainWindow.Hide();
+        }
+
         private ContractWindow _helpWindow;
 
         public void ShowWpHelp()
