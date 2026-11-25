@@ -49,3 +49,18 @@ public record Bin(ExpressionOperatorKind Operator, AstExpression First, AstExpre
 /// </summary>
 /// <param name="AstExpression">Выражение, из которого нужно получить модуль</param>
 public record Abs(AstExpression AstExpression) : AstExpression;
+
+/// <summary>
+/// Доступ к элементу массива: a[j]
+/// </summary>
+public record ArrAccess(string ArrayName, AstExpression Index) : AstExpression;
+
+/// <summary>
+/// Операции над префиксом массива (для инвариантов)
+/// </summary>
+public enum PrefixOpKind { Sum, CountAbove, Max }
+
+/// <summary>
+/// Префиксная операция, например: Sum(a, j) или CountAbove(a, j, T)
+/// </summary>
+public record PrefixExpr(PrefixOpKind Op, string ArrayName, AstExpression Bound, AstExpression? Threshold = null) : AstExpression;

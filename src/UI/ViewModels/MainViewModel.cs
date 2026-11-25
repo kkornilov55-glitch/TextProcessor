@@ -1,4 +1,5 @@
 ﻿using TextProcessor.Logic;
+using TextProcessor.Logic.AbstractSyntaxTree;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
@@ -26,7 +27,7 @@ namespace UI.ViewModels
         }
 
         // Свойства для интерфейса
-        private string currentOperationTitle = "Нормализация текста";
+        private string currentOperationTitle = "Нормализация описания";
         public string CurrentOperationTitle
         {
             get
@@ -37,11 +38,25 @@ namespace UI.ViewModels
             {
                 this.currentOperationTitle = value;
                 this.Notify("CurrentOperationTitle");
+                this.Notify(nameof(InputHint));
                 this.UpdateOperationVisibility();
                 this.ResetStatuses();
+                if (this.currentOperationTitle == "Калькулятор wp")
+                    this.CheckWpPreConditions();
             }
         }
 
+        public string InputHint => this.currentOperationTitle switch
+        {
+            "Маскирование данных" => this.selectedMaskType switch
+            {
+                "СНИЛС (11 цифр)" => "Введите СНИЛС заявителя, например 12345678901.",
+                "Банковская карта (16 цифр)" => "Для демонстрации используйте условный номер, например 1234567890123456.",
+                _ => "Введите телефон заявителя, например 9001234567."
+            },
+            "Поиск по обращениям" => "Введите по одному обращению на строку. Пример ключевого слова — VPN.",
+            _ => "Введите описание заявки. Например, «НЕ РАБОТАЕТ VPN!!!» станет «не работает vpn»."
+        };
 
         private string inputText = "";
         public string InputText
@@ -55,8 +70,6 @@ namespace UI.ViewModels
                 this.inputText = value;
                 this.Notify("InputText");
                 this.CheckPreConditions();
-                if (this.currentOperationTitle == "WP Калькулятор")
-                    this.CheckWpPreConditions();
             }
         }
 
@@ -82,6 +95,7 @@ namespace UI.ViewModels
             {
                 this.selectedMaskType = value;
                 this.Notify("SelectedMaskType");
+                this.Notify(nameof(InputHint));
             }
         }
 
@@ -155,20 +169,43 @@ namespace UI.ViewModels
 
         private void UpdateOperationVisibility()
         {
-            this.IsFilteringVisible = (this.currentOperationTitle == "Фильтрация строк")
+            this.IsFilteringVisible = (this.currentOperationTitle == "Поиск по обращениям")
                 ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed;
 
-            this.IsMaskingOptionsVisible = (this.currentOperationTitle == "Маскирование")
+            this.IsMaskingOptionsVisible = (this.currentOperationTitle == "Маскирование данных")
                 ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed;
 
-            this.IsWpVisible = (this.currentOperationTitle == "WP Калькулятор")
+            this.IsWpVisible = (this.currentOperationTitle == "Калькулятор wp")
                 ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed;
 
-            this.IsContractVisible = (this.currentOperationTitle == "WP Калькулятор")
+            this.IsContractVisible = (this.currentOperationTitle == "Калькулятор wp")
                 ? System.Windows.Visibility.Collapsed : System.Windows.Visibility.Visible;
 
-            this.IsLr1Visible = (this.currentOperationTitle == "WP Калькулятор")
+            this.IsLr1Visible = (this.currentOperationTitle == "Калькулятор wp")
                 ? System.Windows.Visibility.Collapsed : System.Windows.Visibility.Visible;
+        }
+
+        public IReadOnlyList<WpPreset> WpPresets => SupportDeskWpPresets.All;
+
+        private string wpCode = "";
+        public string WpCode
+        {
+            get => this.wpCode;
+            set
+            {
+                this.wpCode = value;
+                this.Notify(nameof(WpCode));
+                this.CheckWpPreConditions();
+            }
+        }
+
+        public void LoadWpPreset(WpPreset preset)
+        {
+            this.WpCode = preset.Code;
+            this.WpPostCondition = preset.PostCondition;
+            this.WpSteps = "";
+            this.WpPre = "";
+            this.WpTriad = "";
         }
 
         private string wpPostCondition = "";
@@ -179,7 +216,7 @@ namespace UI.ViewModels
             {
                 this.wpPostCondition = value;
                 this.Notify("WpPostCondition");
-                if (this.currentOperationTitle == "WP Калькулятор")
+                if (this.currentOperationTitle == "Калькулятор wp")
                     this.CheckWpPreConditions();
             }
         }
@@ -218,14 +255,14 @@ namespace UI.ViewModels
         }
         private void CheckWpPreConditions()
         {
-            if (this.currentOperationTitle != "WP Калькулятор")
+            if (this.currentOperationTitle != "Калькулятор wp")
                 return;
 
             bool isMet = false;
             string message = "";
 
             // Проверяем, заполнены ли оба поля
-            if (string.IsNullOrWhiteSpace(this.inputText))
+            if (string.IsNullOrWhiteSpace(this.wpCode))
             {
                 isMet = false;
                 message = "Поле 'Код программы' пустое";
@@ -274,20 +311,20 @@ namespace UI.ViewModels
         // Кнопки слева
         public void SelectNormalization()
         {
-            this.CurrentOperationTitle = "Нормализация текста";
+            this.CurrentOperationTitle = "Нормализация описания";
         }
 
         public void SelectMasking()
         {
-            this.CurrentOperationTitle = "Маскирование";
+            this.CurrentOperationTitle = "Маскирование данных";
         }
         public void SelectWpCalculator()
         {
-            this.CurrentOperationTitle = "WP Калькулятор";
+            this.CurrentOperationTitle = "Калькулятор wp";
         }
         public void SelectFiltering()
         {
-            this.CurrentOperationTitle = "Фильтрация строк";
+            this.CurrentOperationTitle = "Поиск по обращениям";
         }
 
         // Логика статусов
@@ -305,7 +342,7 @@ namespace UI.ViewModels
         {
             try
             {
-                if (this.currentOperationTitle == "Нормализация текста")
+                if (this.currentOperationTitle == "Нормализация описания")
                 {
                     var normalizer = new Normalization();
                     this.inputText = normalizer.Normalize(this.inputText);
@@ -316,7 +353,7 @@ namespace UI.ViewModels
                     this.PostColor = "Green";
                     this.PostText = "ВЫПОЛНЕНО";
                 }
-                else if (this.currentOperationTitle == "Маскирование")
+                else if (this.currentOperationTitle == "Маскирование данных")
                 {
                     var masker = new TextMasking();
                     ProcessResult result;
@@ -341,14 +378,14 @@ namespace UI.ViewModels
 
                     this.HandleProcessResult(result);
                 }
-                else if (this.currentOperationTitle == "Фильтрация строк")
+                else if (this.currentOperationTitle == "Поиск по обращениям")
                 {
                     var filter = new TextFiltering();
                     string keywordToUse = string.IsNullOrWhiteSpace(this.filterKeyword) ? "тест" : this.filterKeyword;
                     ProcessResult result = filter.FilterLinesByKeyword(this.inputText, keywordToUse);
                     this.HandleProcessResult(result);
                 }
-                else if (this.currentOperationTitle == "WP Калькулятор")
+                else if (this.currentOperationTitle == "Калькулятор wp")
                 {
                     this.CalculateWp();
                 }
@@ -423,17 +460,17 @@ namespace UI.ViewModels
             bool isMet = false;
             string message = "";
 
-            if (this.currentOperationTitle == "Нормализация текста")
+            if (this.currentOperationTitle == "Нормализация описания")
             {
                 isMet = !string.IsNullOrWhiteSpace(this.inputText);
                 message = isMet ? "Текст содержит данные для обработки" : "Текст пуст или состоит из пробелов";
             }
-            else if (this.currentOperationTitle == "Фильтрация строк")
+            else if (this.currentOperationTitle == "Поиск по обращениям")
             {
                 isMet = !string.IsNullOrWhiteSpace(this.inputText) && !string.IsNullOrWhiteSpace(this.filterKeyword);
                 message = isMet ? "Текст и ключевое слово заданы" : "Текст или ключевое слово пусты";
             }
-            else if (this.currentOperationTitle == "Маскирование")
+            else if (this.currentOperationTitle == "Маскирование данных")
             {
                 // Для маскирования проверяем содержание цифр
                 if (string.IsNullOrWhiteSpace(this.inputText))
@@ -518,7 +555,10 @@ namespace UI.ViewModels
                     string loadedText = fileIO.ImportFromFile(openFileDialog.FileName);
 
                     // Записываем текст в свойство
-                    this.InputText = loadedText;
+                    if (this.IsWpVisible == Visibility.Visible)
+                        this.WpCode = loadedText;
+                    else
+                        this.InputText = loadedText;
                 }
                 catch (Exception ex)
                 {
@@ -546,7 +586,8 @@ namespace UI.ViewModels
                 {
                     // Используем бизнес-логику для записи файла
                     TextFileIO fileIO = new TextFileIO();
-                    fileIO.ExportToFile(saveFileDialog.FileName, this.InputText);
+                    string content = this.IsWpVisible == Visibility.Visible ? this.WpCode : this.InputText;
+                    fileIO.ExportToFile(saveFileDialog.FileName, content);
 
                     MessageBox.Show("Файл успешно сохранен!", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
@@ -567,9 +608,9 @@ namespace UI.ViewModels
                 return;
             }
 
-            ContractViewModel helpViewModel = new ContractViewModel("WP Калькулятор");
+            ContractViewModel helpViewModel = new ContractViewModel("Калькулятор wp");
             _helpWindow = new ContractWindow(helpViewModel);
-            _helpWindow.Title = "Справка: WP Калькулятор";
+            _helpWindow.Title = "Справка: калькулятор wp";
             _helpWindow.Owner = System.Windows.Application.Current.MainWindow;
             _helpWindow.Closed += (s, e) => _helpWindow = null; 
             _helpWindow.Show();
@@ -593,7 +634,7 @@ namespace UI.ViewModels
 
             try
             {
-                string codeText = this.inputText;
+                string codeText = this.wpCode;
                 string postConditionText = this.wpPostCondition;
 
                 // Отладочный вывод (видно в окне "Вывод" / "Output" в Visual Studio)

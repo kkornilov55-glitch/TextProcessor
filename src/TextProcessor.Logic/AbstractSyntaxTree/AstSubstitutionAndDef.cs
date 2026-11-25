@@ -14,6 +14,14 @@ public static class AstSubstitutionAndDef
         Var v => v.Name == variableName ? replacement : v,
         Neg neg => new Neg(Substitute(neg.AstExpression, variableName, replacement)),
         Abs abs => new Abs(Substitute(abs.AstExpression, variableName, replacement)),
+        ArrAccess arr => new ArrAccess(
+            arr.ArrayName,
+            Substitute(arr.Index, variableName, replacement)),
+        PrefixExpr p => new PrefixExpr(
+            p.Op,
+            p.ArrayName,
+            Substitute(p.Bound, variableName, replacement),
+            p.Threshold != null ? Substitute(p.Threshold, variableName, replacement) : null),
         Bin bin => new Bin(
             bin.Operator,
             Substitute(bin.First, variableName, replacement),
