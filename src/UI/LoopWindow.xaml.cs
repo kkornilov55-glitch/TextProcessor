@@ -23,5 +23,11 @@ namespace UI
         private void BtnStop_Click(object sender, RoutedEventArgs e) => this.viewModel.StopRun();
 
         private void BtnReset_Click(object sender, RoutedEventArgs e) => this.viewModel.ResetSession();
+
+        private void BtnReturn_Click(object sender, RoutedEventArgs e)
+        {
+            this.viewModel.StopRun();
+            this.Close();
+        }
     }
 }
