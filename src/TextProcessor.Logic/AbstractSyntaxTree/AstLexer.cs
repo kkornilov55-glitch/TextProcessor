@@ -51,6 +51,7 @@ public static class AstLexer
         ["≠"] = TokenKind.Ne,
         ["&&"] = TokenKind.And,
         ["||"] = TokenKind.Or,
+        ["∧"] = TokenKind.And,
         ["∨"] = TokenKind.Or,
         ["!"] = TokenKind.Not,
         ["¬"] = TokenKind.Not,
