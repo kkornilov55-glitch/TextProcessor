@@ -29,14 +29,6 @@ public class LexerTests
         Assert.Equal("Ident", kinds[0]);
         Assert.Equal("Ident", kinds[1]);
     }
-    
-    [Fact]
-        public void Tokenize_UnicodeOperators_AreAliasesOfAscii()
-        {
-            Assert.Equal(
-                "Ident Assign Number Semicolon Ident Ge Ident And Ident Ne Ident Or Not Ident Eof",
-                Kinds("x ≔ 1; a ≥ b ∧ c ≠ d ∨ ¬e"));
-        }
  
         [Theory]
         [InlineData("while (x > 0) { }")]

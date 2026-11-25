@@ -51,7 +51,7 @@ public class WpFacadeTests
     [Theory]
     [InlineData("", "x > 0", "Код фрагмента программы не может быть пустым")]
     [InlineData("x := 1;", "", "Постусловие (Post) не может быть пустым")]
-    [InlineData("x := 1;", "x === 0", "Ошибка в постусловии")]
+    [InlineData("x := 1;", "x === 0", "Лексическая ошибка в постусловии")]
     [InlineData("if (x > 0) { x := 1; }", "x > 0", "Ошибка в коде программы")] // нет ветки else
     public void Calculate_InvalidInput_ReturnsIsSuccessFalseWithMessage(
         string code, string post, string expectedErrorSubstring)
