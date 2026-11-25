@@ -22,6 +22,11 @@ public sealed class LoopSession
 
     /// <summary>Результат проверки Post. До выхода из цикла значение равно null</summary>
     public bool? PostconditionHolds { get; private set; }
+    
+    public LoopWpResult? WpVerificationResult { get; private set; }
+    
+    public void VerifyInvariantBeforeStep() =>
+        WpVerificationResult = LoopWpVerifier.VerifyStep(Preset);
 
     public LoopSession(LoopMode mode, IEnumerable<int> values, int threshold = 0)
     {
@@ -48,6 +53,9 @@ public sealed class LoopSession
     {
         if (IsCompleted)
             return null;
+        
+        if (WpVerificationResult == null)
+            VerifyInvariantBeforeStep();
 
         LoopState before = State;
         int currentElement = Values[before.Index];
